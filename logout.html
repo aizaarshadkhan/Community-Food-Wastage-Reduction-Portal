@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Logout | MealBridge</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+        }
+
+        .logout-page {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navy-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 62%;
+            height: 100%;
+            background: #0b1f3a;
+            clip-path: polygon(0 0,
+                    80% 0,
+                    90% 50%,
+                    80% 100%,
+                    0 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding-left: 9%;
+        }
+
+        .brand {
+            position: absolute;
+            top: 35px;
+            left: 50px;
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .brand i {
+            margin-right: 8px;
+        }
+
+        .visual-content {
+            max-width: 480px;
+        }
+
+        .visual-icon {
+            font-size: 85px;
+            margin-bottom: 25px;
+        }
+
+        .visual-content h1 {
+            font-size: 52px;
+            line-height: 1.1;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .visual-content p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #d7dfeb;
+        }
+
+        .white-section {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .confirmation {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .confirmation .small-title {
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .confirmation h2 {
+            color: #0b1f3a;
+            font-size: 34px;
+            font-weight: 700;
+            margin: 12px 0 18px;
+        }
+
+        .confirmation p {
+            color: #6c757d;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-logout {
+            background: #0b1f3a;
+            color: white;
+            border: 2px solid #0b1f3a;
+            padding: 13px 28px;
+            font-weight: 600;
+        }
+
+        .btn-logout:hover {
+            background: #ffffff;
+            color: #0b1f3a;
+        }
+
+        .btn-cancel {
+            background: white;
+            color: #0b1f3a;
+            border: 2px solid #d1d6dc;
+            padding: 13px 28px;
+            font-weight: 600;
+        }
+
+        .btn-cancel:hover {
+            background: #f3f5f7;
+        }
+
+        .footer-note {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e5e8;
+            font-size: 13px;
+            color: #8a929a;
+        }
+
+        @media (max-width: 900px) {
+
+            .navy-section {
+                position: relative;
+                width: 100%;
+                height: 50vh;
+                min-height: 400px;
+                clip-path: none;
+                padding: 100px 35px 40px;
+            }
+
+            .white-section {
+                position: relative;
+                width: 100%;
+                height: 50vh;
+                min-height: 400px;
+                padding: 45px 30px;
+            }
+
+            .brand {
+                left: 30px;
+            }
+
+            .visual-content h1 {
+                font-size: 40px;
+            }
+
+            .visual-icon {
+                font-size: 60px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group button {
+                width: 100%;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="logout-page">
+
+
+        <!-- Navy Section -->
+
+        <section class="navy-section">
+
+            <div class="brand">
+                <i class="bi bi-heart-fill"></i>
+                MealBridge
+            </div>
+
+            <div class="visual-content">
+
+                <div class="visual-icon">
+                    <i class="bi bi-box-arrow-right"></i>
+                </div>
+
+                <h1>
+                    See you<br>
+                    again soon.
+                </h1>
+
+                <p>
+                    Your contribution makes a difference.
+                    Thank you for being part of the MealBridge
+                    community.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- White Section -->
+
+        <section class="white-section">
+
+            <div class="confirmation">
+
+                <span class="small-title">
+                    Account Logout
+                </span>
+
+                <h2>
+                    Are you sure?
+                </h2>
+
+                <p>
+                    Logging out will end your current session.
+                    You can sign back in anytime using your
+                    MealBridge account.
+                </p>
+
+
+                <div class="button-group">
+
+                    <button class="btn btn-logout" onclick="logoutUser()">
+                        Logout
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+
+                    <button class="btn btn-cancel" onclick="goBack()">
+                        Stay Logged In
+                    </button>
+
+                </div>
+
+
+                <div class="footer-note">
+                    <i class="bi bi-shield-check me-1"></i>
+                    Your account session will be securely cleared.
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <script>
+
+    function logoutUser() {
+
+        fetch("BACKEND/auth/logout.php", {
+            method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            // Clear frontend login data
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect to login page
+            window.location.href = "login.html";
+
+        })
+        .catch(error => {
+
+            console.error("Logout error:", error);
+
+            // Clear frontend login data even if the server request fails
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Still redirect to login
+            window.location.href = "login.html";
+        });
+    }
+
+
+    function goBack() {
+
+        window.history.back();
+
+    }
+
+</script>
+
+</body>
+
+</html>

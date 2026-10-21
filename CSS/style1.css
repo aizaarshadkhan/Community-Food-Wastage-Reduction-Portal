@@ -1,0 +1,233 @@
+:root {
+    /* Brand Colors */
+    --primary-color: #065C4B;
+    --secondary-color: #081F45;
+    /* Background */
+    --background: #FCFCFC;
+    /* Shadow */
+    --shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background-image: url(../IMG/register-page-bg-left.png), url(../IMG/register-page-bg-right.png);
+    background-attachment: fixed;
+    background-repeat: no-repeat, no-repeat;
+    background-size: 47% 100%, 70% 95%;
+    background-position: left top, right bottom;
+    width: 100%;
+    height: 100%;
+    background-color: #FAFAFA;
+}
+
+/* nav bar */
+
+header {
+    border: 2px solid transparent;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    color: var(--secondary-color);
+    height: 60px;
+    
+}
+
+.logo {
+    display: flex;
+    font-family: "amatic", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 25px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.logo:hover {
+    transform: translateX(-2px);
+}
+
+.logo img {
+    height: 110px;
+    margin-right: 1rem;
+    margin-top: 0.4375rem;
+}
+
+.logo h1{
+    margin-top: 2.1875rem;
+    font-size: 2.1875rem;
+    color: white;
+    font-weight: 600;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    font-size: 0.875rem;
+}
+
+nav li {
+    margin-left: 1.25rem;
+}
+
+.login-button{
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background-color: var(--secondary-color);
+    width: 60px;
+    text-align: center;
+    padding:  0.375rem;
+    position: relative;
+    bottom: 5px;
+    transition: all 1s ease;
+}
+
+nav a {
+    color: rgb(255, 253, 253);
+    text-decoration: none;
+}
+
+.login-button:hover {
+    background-color: var(--primary-color);
+}
+
+.color{
+    color: var(--primary-color);
+}
+
+/* register page */
+.container {
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    min-height: 520px;
+    width: 350px;
+    margin-top: 3rem;
+    margin-left: 4.375rem;
+    margin-bottom: 1.5625rem;
+    padding: 1.875rem;
+    text-align: left;
+    background-color: var(--background);
+    color: var(--secondary-color);
+}
+
+.line {
+    width: 60px;
+    height: 2px;
+    background: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.container h2{
+    font-weight: 700;
+    margin-bottom: 0.4375rem;
+}
+
+.container p:first-of-type{
+    font-size: 0.8125rem;
+    font-weight: 300;
+    color: #454444;
+    margin-bottom: 0.5rem;
+}
+
+.role-btn{
+    width: 130px;
+    height: 40px;
+    border: 1px solid #949596;
+    box-shadow: var(--shadow);
+    border-radius: 5px;
+    background: #fff;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-weight:600;
+}
+
+.active{
+    border: 1px solid #1B8B73;
+    background-color: #e6e4e4;
+}
+
+
+input{
+    width: 100%;
+    margin-top: 0.3125rem;
+    margin-bottom: 0.3125rem;
+    height: 30px;
+    border: 1px solid rgb(142, 138, 138);
+    border-radius: 3px;
+    padding: 0.375rem;
+}
+
+.register-button {
+    width: 100%;
+    padding: 0.56rem;
+    border: none;
+    border-radius: 7px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 0.375rem;
+    margin-bottom: 0.56rem;
+    transition: all 1s ease;
+}
+
+.register-button:hover {
+    background-color: var(--secondary-color);
+}
+
+.google-button {
+    width: 100%;
+    padding: 9px;
+    border: 1px solid black;
+    border-radius: 7px;
+    background: white;
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    margin-bottom: 0.59rem;
+    transition: all 1s ease;
+    box-shadow: var(--shadow);
+}
+
+.google-button:hover{
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+small{
+    font-size: 0.625rem;
+    color: #4a4949;
+}
+
+span{
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+.btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.4375rem;
+}
+
+h3{
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}

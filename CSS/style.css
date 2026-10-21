@@ -1,0 +1,844 @@
+:root {
+    /* Brand Colors */
+    --primary-color: #065C4B;
+    --secondary-color: #081F45;
+    /* opacity of brand color */
+    --light-primary-color: #065c4b53;
+    --light-secondary-color: #081f455d;
+    /* Background */
+    --background: #FCFCFC;
+    /* Shadow */
+    --shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+html,
+body{
+    width:100%;
+    overflow-x:hidden; 
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* nav bar */
+header {
+    border: 2px solid transparent;
+}
+
+.nav-btn{
+    display: none;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: white;
+    color: var(--secondary-color);
+    height: 60px;
+    position: sticky;
+}
+
+.logo {
+    display: flex;
+    font-family: "Amatic", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.logo:hover {
+    transform: translateX(-2px);
+}
+
+.logo img {
+    height: 110px;
+    margin-right: 1rem;
+    margin-top: 0.4375rem;
+}
+
+.logo h1 {
+    margin-top: 1.875rem;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav li {
+    margin-left: 1.25rem;
+}
+
+nav a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: var(--secondary-color);
+}
+
+.loginbtn,
+.registerbtn{
+    text-decoration: none;
+    padding: 0.4375rem 1.25rem;
+    border-radius: 10px;
+    font-size: 1.06rem;
+    font-weight: 600;
+    transition:.3s;
+}
+
+.loginbtn{
+    color: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+    background: #fff;
+}
+
+.loginbtn:hover{
+    background: var(--secondary-color);
+    color: #fff;
+}
+
+.registerbtn{
+    background: var(--primary-color);
+    color: #fff;
+    border: 1px solid var(--primary-color);
+}
+
+.registerbtn:hover{
+    background: white;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+/* Login Page */
+.login {
+    background-image: url(../IMG/login-img-left.png), url(../IMG/login-img-right.PNG);
+    background-repeat: no-repeat, no-repeat;
+    background-position: left top, right bottom;
+    background-attachment: fixed;
+    background-size: 80% 100%, 60% 80%;
+    width: 100%;
+    height: auto;
+}
+
+.container {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    height: 100vh;
+}
+
+.left {
+    padding: 3.125rem 0 3.125rem 3.75rem;
+    color: white;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 3.75rem;
+    margin-top: 4.0725rem;
+}
+
+.logo-login {
+    margin-bottom: 1.25rem;
+    width: 250px;
+}
+
+.left-content {
+    margin-top: -4.0625rem;
+}
+
+.left h2 {
+    line-height: 38px;
+    font-weight: 400;
+    font-size: 2.05rem;
+}
+
+.left-content p:last-child {
+    font-weight: 200;
+    font-size: 0.93rem;
+    margin-top: 0.625rem;
+}
+
+.color {
+    color: var(--primary-color);
+}
+
+.line {
+    width: 80px;
+    height: 2px;
+    background: var(--primary-color);
+    margin-bottom: 1.25rem;
+    margin-top: 0.625rem;
+}
+
+.bottom-icons {
+    margin-top: -0.625rem;
+    height: 100px;
+    width: 400px;
+}
+
+.description {
+    width: 300px;
+}
+
+.right {
+    color: var(--secondary-color);
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    margin-left: 1.5rem;
+}
+
+.login-container {
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    height: 500px;
+    width: 350px;
+    margin-top: 1.875rem;
+    padding: 1.25rem;
+    text-align: center;
+    background-color: var(--background);
+}
+
+.login-container h2 {
+    font-weight: 700;
+    font-size: 2.05rem;
+}
+
+.login-container p:first-of-type {
+    position: relative;
+    bottom: 26px;
+    font-size: 0.875rem;
+}
+
+.login-button {
+    width: 100%;
+    padding: 0.5625rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    position: relative;
+    bottom: 120px;
+    transition: all 1s ease;
+}
+
+.login-button:hover {
+    background-color: var(--secondary-color);
+}
+
+hr {
+    position: relative;
+    bottom: 120px;
+}
+
+.login-content {
+    text-align: left;
+    position: relative;
+    bottom: 30px;
+    font-size: 0.9rem;
+}
+
+.login-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 300;
+    position: relative;
+    bottom: 60px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.login-actions a {
+    color: var(--secondary-color);
+}
+
+.login-actions a:hover {
+    color: var(--primary-color);
+}
+
+.icon {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.icon button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(115, 113, 113, 0.582);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    bottom: 120px;
+    box-shadow: var(--shadow);
+}
+
+.icon>button:hover {
+    border-color: var(--secondary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(20, 108, 96, 0.15);
+}
+
+.icon>button i {
+    font-size: 1.25rem;
+}
+
+label {
+    margin-bottom: 0.57rem;
+    font-weight: 600;
+}
+
+#password,
+#email {
+    width: 100%;
+    height: 1.3rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 0.875rem 1rem;
+    margin-bottom: 1.5625rem;
+}
+
+.password {
+    position: relative;
+    bottom: 30px;
+}
+
+.register-line {
+    display: flex;
+    position: relative;
+    bottom: 105px;
+    left: 15px;
+}
+
+.register-line p {
+    display: inline;
+    position: relative;
+    top: 1px;
+}
+
+.register-line a {
+    position: relative;
+    left: 4px;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.register-line a:hover {
+    color: var(--secondary-color);
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.error {
+    color: red;
+    font-size: 0.77rem;
+    display: block;
+}
+
+.success {
+    border: 2px solid #065C4B;
+    color: #1a1b1b;
+    width: 150px;
+    height: 25px;
+    border-radius: 20px;
+    text-align: center;
+    padding: 0.3125rem;
+    position: relative;
+    left: 40%;
+}
+
+small {
+    position: relative;
+    bottom: 40px;
+}
+
+.login-message {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.login-message.error {
+    color: red;
+}
+
+.login-message.success {
+    color: green;
+}
+
+
+
+
+/* index page*/
+.hero-container {
+    background-image: url(../IMG/register-page-bg-left.png), url(../IMG/register-page-bg-right.png);
+    background-attachment: fixed;
+    background-repeat: no-repeat, no-repeat;
+    background-size: 45% 100%, 70% 95%;
+    background-position: left, right;
+    width: 100%;
+    height: 80vh;
+    background-color: #FAFAFA;
+    color: white;
+    padding: 30px;
+    font-family: "Poppins", sans-serif;
+}
+
+.hero {
+    margin-left: 30px;
+    margin-top: 25px;
+}
+
+.hero h1 {
+    font-size: 40px;
+    font-weight: 600;
+}
+
+.hero p {
+    width: 30%;
+    font-size: 13px;
+    line-height: 23px;
+    margin-top: 20px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.hero-buttons .donate-btn {
+    border: 1px solid transparent;
+    background-color: var(--primary-color);
+    padding: 7px;
+    border-radius: 5px;
+    color: white;
+}
+
+.hero-buttons .find-btn {
+    border: 1px solid white;
+    background-color: transparent;
+    padding: 7px;
+    border-radius: 5px;
+    color: white;
+}
+
+/* stat section */
+.statistics {
+    width: 88%;
+    margin-top: -60px;
+    margin-left: 70px;
+    margin-bottom: 30px;
+    background: white;
+    border-radius: 25px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    box-shadow: var(--shadow);
+    padding: 35px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-right: 1px solid #ECECEC;
+    margin-left: 10px;
+}
+
+.stat-card:last-child {
+    border: none;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #EEF8F3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.stat-icon i {
+    color: var(--primary-color);
+    font-size: 30px;
+}
+
+.stat-card h2 {
+    color: var(--primary-color);
+    font-size: 34px;
+}
+
+.stat-card p {
+    color: #555;
+
+}
+
+/* how it works section */
+
+.how-it-works {
+    width: 90%;
+    margin: auto;
+    text-align: center;
+}
+
+.how-it-works h2 {
+    font-size: 45px;
+    margin-top: 20px;
+    color: var(--secondary-color);
+}
+
+.steps {
+    margin-top: 60px;
+    display: flex;
+    gap: 30px;
+}
+
+.step-card {
+    border-radius: 22px;
+    padding: 40px 30px;
+    box-shadow: var(--shadow);
+    position: relative;
+    transition: .35s;
+}
+
+.step-card:nth-child(1),
+.step-card:nth-child(5) { 
+    background-color: var(--light-primary-color); 
+} 
+
+.step-card:nth-child(3),
+.step-card:nth-child(7) { 
+    background-color: var(--light-secondary-color); 
+}
+
+.step-card:hover {
+    transform: translateY(-12px);
+}
+
+.step-number {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+}
+
+.arrow {
+    position: relative;
+    top: 100px;
+}
+
+.step-card i {
+    font-size: 40px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.step-card h3 {
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+}
+
+/*  */
+
+.bottom-banner-container {
+    width: 90%;
+    margin: 90px auto;
+    background-image: url(../IMG/home-page-footer-banner.png);
+    background-repeat: no-repeat;
+    background-size: 100% 250% ;
+    background-position: center center;
+}
+
+.bottom-banner {
+    border-radius: 22px;
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bottom-text{
+    width: 60%;
+}
+
+.bottom-banner h2 {
+    color: white;
+    font-size: 46px;
+}
+
+.bottom-banner p {
+    color: #E5E7EB;
+    margin-top: 10px;
+}
+
+.bottom-buttons a {
+    text-decoration: none;
+    background: var(--primary-color);
+    color: white;
+    padding: 13px;
+    border-radius: 12px;
+    font-weight: 600;
+    position: relative;
+    right: 20px;
+}
+
+/* Footer */
+.footer{
+    background: var(--secondary-color);
+    color: white;
+    margin-top: 80px;
+}
+
+.footer-container{
+    width: 90%;
+    max-width: 1300px;
+    margin: auto;
+    padding: 60px 0 35px;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-template-rows: 1fr;
+    grid-template-areas: "b1 b2 b3 b4";
+    gap:40px;
+}
+
+.footer-logo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: -17px;
+}
+
+.footer-logo img{
+    width: 80px;
+    height: 80px;
+}
+
+.footer-logo h2{
+    font-size:30px;
+    font-weight:700;
+}
+
+.footer-logo span{
+    color: var(--primary-color);
+}
+
+.about-p{
+    color: white;
+    line-height: 1.5;
+    margin-top: -20px;
+    width: 300px;
+}
+
+.footer-box h3{
+    margin-bottom: 18px;
+    font-size: 22px;
+}
+
+.footer-box ul{
+    list-style: none;
+}
+
+.footer-box ul li{
+    margin: 12px 0;
+}
+
+.footer-box ul li a{
+    text-decoration: none;
+    color: #d8d8d8;
+    transition: .3s;
+}
+
+.footer-box ul li a:hover{
+    color: var(--primary-color);
+    padding-left: 6px;
+}
+
+.footer-box p i{
+    margin-right: 10px;
+    margin-bottom: 3px;
+}
+
+.footer-box p{
+    line-height: 1.4;
+}
+
+.social-icons{
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-icons a{
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #143b5f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: .3s;
+}
+
+.social-icons a:hover{
+    background: var(--primary-color);
+    transform: translateY(-4px);
+}
+
+.footer-bottom{
+    border-top: 1px solid rgba(255,255,255,.15);
+    text-align: center;
+    padding: 20px;
+    color: white;
+}
+
+/* blog section */
+.blog-section {
+    width: 100%;
+    padding: 70px 6%;
+    background: var(--secondary-color);
+    margin-top: 3rem;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-title h2 {
+    font-size: 38px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.section-title p {
+    color: rgb(168, 166, 166);
+    font-size: 16px;
+}
+
+.blog-slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.slider {
+    display: flex;
+    gap: 25px;
+    overflow: hidden;
+    scroll-behavior: smooth;
+    width: 100%;
+}
+
+.slider::-webkit-scrollbar {
+    display: none;
+}
+
+.blog-card {
+    flex: 0 0 calc((100% - 70px) / 3);
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    transition: .3s;
+}
+
+.blog-card:hover {
+    transform: translateY(-8px);
+}
+
+.blog-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.blog-content {
+    padding: 20px;
+}
+
+.blog-content h3 {
+    color: var(--secondary-color);
+    margin-bottom: 12px;
+    font-size: 22px;
+}
+
+.blog-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.blog-content a {
+    color: #081f45af;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.blog-content a:hover {
+    color: var(--secondary-color);
+}
+
+/* Buttons */
+
+.prev,
+.next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #0B3C5D;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 5;
+    transition: .3s;
+}
+
+.prev:hover,
+.next:hover {
+    background: #145d86;
+}
+
+.prev {
+    position: relative;
+    left: -30px;
+}
+
+.next {
+    position: relative;
+    right: -30px;
+}

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register . MealBridge</title>
+
+    <!-- Your existing CSS -->
+    <link rel="stylesheet" href="CSS/style1.css">
+    <link rel="stylesheet" href="CSS/responsive1.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Cormorant+Upright:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="icon" type="image/x-icon" href="IMG/logo.png">
+</head>
+
+
+<body class="register-body">
+
+    <header>
+        <nav>
+
+            <div class="logo">
+
+                <img src="IMG/logo-white.png" alt="MealBridge Logo">
+
+                <h1>
+                    Meal<span class="color">Bridge</span>
+                </h1>
+
+            </div>
+
+            <ul>
+
+                <li>
+                    Already have an account?
+                </li>
+
+                <li class="login-button">
+                    <a href="login.html" target="_blank">
+                        Login
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
+    </header>
+
+
+    <div class="container">
+
+        <h2>Create Your Account</h2>
+
+        <div class="line"></div>
+
+        <p>Join MealBridge and be a part of the change</p>
+
+        <div class="line"></div>
+
+
+        <!-- REGISTER AS -->
+
+        <h3>Register As</h3>
+
+        <div class="btn">
+
+            <button
+                type="button"
+                class="role-btn active"
+                data-role="DONOR">
+                Donor
+            </button>
+
+            <button
+                type="button"
+                class="role-btn"
+                data-role="RECIPIENT">
+                Recipient
+            </button>
+
+        </div>
+
+
+        <!-- DONOR FIELDS -->
+
+        <div id="donorFields">
+
+            <input
+                type="text"
+                id="businessName"
+                placeholder="Business Name">
+
+            <small
+                id="businessNameError"
+                class="error">
+            </small>
+
+
+            <input
+                type="text"
+                id="phone"
+                placeholder="Phone Number">
+
+            <small
+                id="phoneError"
+                class="error">
+            </small>
+
+        </div>
+
+
+        <!-- RECIPIENT FIELDS -->
+
+        <div id="recipientFields" style="display: none;">
+
+            <input
+                type="text"
+                id="ngoName"
+                placeholder="NGO Name">
+
+            <small
+                id="ngoNameError"
+                class="error">
+            </small>
+
+
+            <input
+                type="text"
+                id="contactPerson"
+                placeholder="Contact Person">
+
+            <small
+                id="contactPersonError"
+                class="error">
+            </small>
+
+        </div>
+
+
+        <!-- COMMON FIELDS -->
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Email Address">
+
+        <small
+            id="emailError"
+            class="error">
+        </small>
+
+
+        <input
+            type="text"
+            id="address"
+            placeholder="Address">
+
+        <small
+            id="addressError"
+            class="error">
+        </small>
+
+
+        <!-- LOCATION -->
+
+        <button
+            type="button"
+            id="locationButton">
+
+            <i class="fa-solid fa-location-dot"></i>
+            Use My Location
+
+        </button>
+
+        <small
+            id="locationError"
+            class="error">
+        </small>
+
+
+        <!-- Hidden location values -->
+
+        <input
+            type="hidden"
+            id="latitude">
+
+        <input
+            type="hidden"
+            id="longitude">
+
+
+        <!-- PASSWORD -->
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Password">
+
+        <small
+            id="passwordError"
+            class="error">
+        </small>
+
+
+        <input
+            type="password"
+            id="confirm-password"
+            placeholder="Confirm Password">
+
+        <small
+            id="confirmPasswordError"
+            class="error">
+        </small>
+
+
+        <!-- REGISTER -->
+
+        <button
+            type="button"
+            class="register-button">
+
+            Register
+
+        </button>
+
+
+        <p class="register-success"></p>
+
+
+        <hr>
+
+
+        <!-- GOOGLE -->
+
+        <button
+            type="button"
+            class="google-button">
+
+            Continue with Google
+
+        </button>
+
+        <br>
+
+
+        <small>
+            By registering, you agree to our
+            <span>Terms and Condition</span>
+            and
+            <span>Privacy Policies</span>
+        </small>
+
+    </div>
+
+
+    <!-- jQuery -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.js"></script>
+
+    <!-- Your JavaScript -->
+
+    <script src="JS/script.js"></script>
+
+</body>
+
+</html>

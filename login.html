@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login . MealBridge</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Cormorant+Upright:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="IMG/logo.png">
+
+</head>
+
+<body class="login">
+    <div class="container">
+        <div class="left">
+            <!-- logo -->
+            <img src="IMG/logo-white.png" class="logo-login" alt="img">
+            <div class="left-content">
+                <h1>Meal<span class="color">Bridge</span></h1>
+                <p class="tagline">Share Food. Share Hope.</p>
+
+                <div class="line"></div>
+
+                <h2 class="left-h2">Together, We Can End Food Waste.</h2>
+
+                <p class="description">
+                    MealBridge connects kind hearts with surplus food
+                    to create a better, healthier community.
+                </p>
+            </div>
+            <img src="IMG/login-icons.png" class="bottom-icons" alt="img">
+
+        </div>
+
+        <div class="right">
+
+            <div class="login-container">
+                <h2>Welcome Back!</h2><br>
+                <p>Login to continue to your account</p><br>
+
+                <div class="login-content">
+                    <div class="group">
+                        <label for="email">Email Address</label><br>
+                        <input type="text" name="email" id="email" placeholder="Enter Your Email"><br><br>
+                        <small id="emailError" class="error"></small>
+                    </div>
+
+                    <div class="group password">
+                        <label for="password" id="password-label">Password</label><br>
+                        <input type="password" name="password" id="password" placeholder="Enter Your Password"><br><br>
+                        <small id="passwordError" class="error"></small>
+                        <div class="login-message"></div>
+
+                        <small id="loginError" class="text-danger d-none"></small>
+                    </div>
+
+                    <div class="login-actions">
+                        <div class="check-box">
+                            <input type="checkbox" name="remember-me" id="remember-me">
+                            <label for="remember-me">Remember me</label>
+                        </div>
+
+                        <a href="forgot-password.html" class="forgot-password">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <br><br>
+                </div>
+
+                <button class="login-button">Login</button><br><br>
+                <hr><br>
+
+                <div class="icon">
+                    <button type="button" class="social-login-btn" id="googleLoginBtn">
+                        <i class="fa-brands fa-google" style="color: rgb(66, 133, 244);"></i>
+                    </button>
+
+                    <button type="button" class="social-login-btn" id="appleLoginBtn">
+                        <i class="fa-brands fa-apple" style="color: rgb(29, 29, 31);"></i>
+                    </button>
+
+                    <button type="button" class="social-login-btn" id="facebookLoginBtn">
+                        <i class="fa-brands fa-facebook-f" style="color: rgb(24, 119, 242);"></i>
+                    </button>
+                </div>
+
+                <div class="register-line">
+                    <p class="last-p">Don't have an account? </p>
+                    <a href="register.html" target="_blank" class="register-link "> Register here</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.js"></script>
+    <script src="JS/script.js"></script>
+
+
+</body>
+
+</html>
