@@ -1,8 +1,8 @@
 $(document).ready(function () {
 
     /* =========================================
-   REMEMBER ME
-========================================= */
+        REMEMBER ME
+    ======================================== */
 
     const savedEmail = localStorage.getItem("remembered_email");
 
