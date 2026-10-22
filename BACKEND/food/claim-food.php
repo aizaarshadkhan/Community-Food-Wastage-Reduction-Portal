@@ -1,8 +1,8 @@
-```php
 <?php
 
 header("Content-Type: application/json");
-require_once "../config/db.php";
+require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/../notifications/notify-helper.php";
 
 try {
     // GET POST DATA
@@ -31,7 +31,7 @@ try {
 
     // CHECK RECIPIENT
     $recipientStmt = $pdo->prepare("
-        SELECT id, role
+        SELECT id, role, ngo_name
         FROM users
         WHERE id = ?
         LIMIT 1
@@ -64,6 +64,7 @@ try {
             id,
             donor_id,
             food_title,
+            pickup_address,
             status,
             expiry_datetime,
             claimed_by
@@ -90,7 +91,6 @@ try {
     $expiry = $food["expiry_datetime"];
 
     // CHECK IF ALREADY EXPIRED
-    // Also handles a zero or invalid expiry date.
     $isExpired = (
         !$expiry ||
         $expiry === "0000-00-00 00:00:00" ||
@@ -173,6 +173,22 @@ try {
     // COMMIT TRANSACTION
     $pdo->commit();
 
+    // Send notifications to donor and recipient
+    $recipientName = $recipient["ngo_name"] ?: "A recipient organization";
+    $foodTitle = $food["food_title"];
+    addNotification(
+        $pdo,
+        $food["donor_id"],
+        "Food Claimed",
+        "{$recipientName} has claimed your donation '{$foodTitle}'. Please coordinate the pickup."
+    );
+    addNotification(
+        $pdo,
+        $recipientId,
+        "Claim Confirmed",
+        "You successfully claimed '{$foodTitle}'. Pickup Address: {$food['pickup_address']}."
+    );
+
     echo json_encode([
         "success" => true,
         "message" => "Food claimed successfully.",
@@ -207,4 +223,3 @@ try {
     ]);
 }
 ?>
-```

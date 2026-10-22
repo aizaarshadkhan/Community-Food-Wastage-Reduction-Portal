@@ -392,9 +392,7 @@ $(document).ready(function () {
 
                                 <div class="food-title">
 
-                                    ${escapeHtml(
-                        food.food_title
-                    )}
+                                    ${food.image ? '<i class="bi bi-image text-success me-1" title="Photo attached"></i>' : ''}${escapeHtml(food.food_title)}
 
                                 </div>
 
@@ -787,6 +785,25 @@ $(document).ready(function () {
                         );
 
 
+                    
+                    // Photo & feedback
+                    if (food.image) {
+                        $("#modalFoodPhoto").attr("src", food.image);
+                        $("#modalFoodPhotoContainer").removeClass("d-none");
+                    } else {
+                        $("#modalFoodPhoto").attr("src", "");
+                        $("#modalFoodPhotoContainer").addClass("d-none");
+                    }
+
+                    if (food.feedback) {
+                        const stars = "⭐".repeat(Number(food.feedback.rating)) + " " + food.feedback.rating + "/5 Stars";
+                        $("#modalFeedbackRating").text(stars);
+                        $("#modalFeedbackComment").text(food.feedback.comment ? ("\"" + food.feedback.comment + "\"") : "No written comment provided.");
+                        $("#modalFeedbackContainer").removeClass("d-none");
+                    } else {
+                        $("#modalFeedbackContainer").addClass("d-none");
+                    }
+
                     modal.show();
 
                 },
@@ -1147,28 +1164,7 @@ $(document).ready(function () {
     // LOGOUT
     // =====================================================
 
-    $("#logoutBtn").click(function (e) {
-
-        e.preventDefault();
-
-
-        localStorage.removeItem(
-            "user_id"
-        );
-
-        localStorage.removeItem(
-            "role"
-        );
-
-        localStorage.removeItem(
-            "email"
-        );
-
-
-        window.location.href =
-            "login.html";
-
-    });
+    $("#logoutBtn").click(function (e) {`r`n        e.preventDefault();`r`n        window.location.href = "logout.html";`r`n    });
 
 
 

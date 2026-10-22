@@ -1,4 +1,4 @@
-﻿# 🍲 Community Food Wastage Reduction Portal
+# 🍲 Community Food Wastage Reduction Portal
 
 ## 📌 Project Overview
 
@@ -164,4 +164,3 @@ No license has been specified yet. Contact the repository owner before reusing o
 ---
 
 **Together, we can reduce food waste and help build a community where surplus food reaches people in need.** 🌍❤️
-git status

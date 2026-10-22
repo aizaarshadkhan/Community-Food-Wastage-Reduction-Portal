@@ -2,7 +2,8 @@
 
 header("Content-Type: application/json");
 
-require_once "../config/db.php";
+require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/../notifications/notify-helper.php";
 
 
 // ==========================================
@@ -53,6 +54,8 @@ try {
         SELECT
             id,
             donor_id,
+            food_title,
+            claimed_by,
             status
         FROM food_listings
         WHERE id = ?
@@ -114,9 +117,11 @@ try {
 
 
     // ==========================================
-    // UPDATE STATUS
+    // UPDATE STATUS WITH TRANSACTION
     // CLAIMED → DELIVERED
     // ==========================================
+
+    $pdo->beginTransaction();
 
     $updateSql = "
         UPDATE food_listings
@@ -140,12 +145,43 @@ try {
 
     if ($updateStmt->rowCount() > 0) {
 
+        // Also update delivered_at timestamp in food_claims table
+        $claimUpdateSql = "
+            UPDATE food_claims
+            SET delivered_at = NOW()
+            WHERE food_id = ?
+            AND delivered_at IS NULL
+        ";
+        $claimUpdateStmt = $pdo->prepare($claimUpdateSql);
+        $claimUpdateStmt->execute([$food_id]);
+
+        $pdo->commit();
+
+        // Send notifications
+        $foodTitle = $food["food_title"];
+        if (!empty($food["claimed_by"])) {
+            addNotification(
+                $pdo,
+                $food["claimed_by"],
+                "Food Delivered",
+                "Your claimed food '{$foodTitle}' has been delivered! Please submit your feedback."
+            );
+        }
+        addNotification(
+            $pdo,
+            $donor_id,
+            "Delivery Confirmed",
+            "You marked '{$foodTitle}' as delivered. Thank you for your donation!"
+        );
+
         echo json_encode([
             "success" => true,
             "message" => "Food marked as delivered successfully."
         ]);
 
     } else {
+
+        $pdo->rollBack();
 
         echo json_encode([
             "success" => false,
@@ -155,6 +191,10 @@ try {
 
 
 } catch (PDOException $e) {
+
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
 
     echo json_encode([
         "success" => false,

@@ -58,7 +58,7 @@
         </nav>
 
         <div class="logout">
-            <a href="#" id="logoutBtn" class="nav-link">
+            <a href="logout.html" id="logoutBtn" class="nav-link">
                 <i class="bi bi-box-arrow-left"></i>
                 Logout
             </a>
@@ -90,7 +90,7 @@
                         Food Details
                     </div>
 
-                    <form id="foodForm">
+                    <form id="foodForm" enctype="multipart/form-data">
                         <!-- FOOD TITLE + CATEGORY -->
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
@@ -136,6 +136,20 @@
                                     Expiry Date & Time
                                 </label>
                                 <input type="datetime-local" class="form-control" id="expiry" required>
+                            </div>
+                        </div>
+
+                        <!-- FOOD IMAGE UPLOAD -->
+                        <div class="mb-3">
+                            <label for="foodImage" class="form-label">
+                                Food Image (Optional)
+                            </label>
+                            <input type="file" class="form-control" id="foodImage" accept="image/png, image/jpeg, image/jpg, image/webp">
+                            <small class="text-muted">
+                                Upload a photo of the food (JPG, PNG, WEBP - Max 5MB).
+                            </small>
+                            <div id="imagePreviewContainer" class="mt-2 d-none">
+                                <img id="imagePreview" src="" alt="Food Preview" style="max-height: 150px; border-radius: 8px; border: 1px solid #ced4da; object-fit: cover;">
                             </div>
                         </div>
 

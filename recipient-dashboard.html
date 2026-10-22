@@ -2,381 +2,245 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Recipient Dashboard . MealBridge</title>
-
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="IMG/logo.png">
-
-
     <!-- Main CSS -->
     <link rel="stylesheet" href="CSS/style6.css">
-
 </head>
 
-
 <body>
-
-
     <!-- ==================================================
          SIDEBAR
     ================================================== -->
-
     <aside class="sidebar">
-
-
         <!-- LOGO -->
-
         <div class="logo">
-
             <img src="IMG/logo-white.png" alt="MealBridge Logo">
-
-            <h2>
-                Meal<span class="green">Bridge</span>
-            </h2>
-
-            <p>
-                Share Food. Share Hope.
-            </p>
-
+            <h2>Meal<span class="green">Bridge</span></h2>
+            <p>Share Food. Share Hope.</p>
         </div>
 
-        <!-- ==================================================
-             NAVIGATION
-        ================================================== -->
-
+        <!-- NAVIGATION -->
         <nav class="nav flex-column">
-
-
-            <!-- Dashboard -->
-
             <a href="recipient-dashboard.html" class="nav-link active">
-
                 <i class="bi bi-grid"></i>
-
                 Dashboard
-
             </a>
-
-            <!-- Available Food -->
-
             <a href="#availableFood" class="nav-link">
-
                 <i class="bi bi-basket2"></i>
-
                 Available Food
-
             </a>
-
-            <!-- My Claims -->
-
             <a href="#myClaims" class="nav-link">
-
                 <i class="bi bi-hand-thumbs-up"></i>
-
                 My Claims
-
             </a>
-
-            <!-- Profile -->
-
             <a href="recipient-profile.html" class="nav-link">
                 <i class="bi bi-person"></i>
                 Profile
             </a>
-
-
         </nav>
 
-        <!-- ==================================================
-             LOGOUT
-        ================================================== -->
-
+        <!-- LOGOUT -->
         <div class="logout">
-
-            <a href="#" id="logoutBtn" class="nav-link">
-
+            <a href="logout.html" id="logoutBtn" class="nav-link">
                 <i class="bi bi-box-arrow-left"></i>
-
                 Logout
-
             </a>
-
         </div>
-
-
     </aside>
 
+    <!-- ==================================================
+         MAIN
+    ================================================== -->
     <main class="main">
+        <!-- WELCOME & NOTIFICATIONS -->
+        <div class="welcome d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1>Welcome back, Recipient! 👋</h1>
+                <p>Find and claim surplus food near you.</p>
+            </div>
 
-        <!-- ==================================================
-             WELCOME
-        ================================================== -->
-
-        <div class="welcome">
-
-            <h1>
-                Welcome back, Recipient! 👋
-            </h1>
-
-            <p>
-                Find and claim surplus food near you.
-            </p>
-
+            <!-- Notification Bell -->
+            <div class="dropdown position-relative">
+                <button class="btn btn-white bg-white shadow-sm rounded-circle position-relative p-2 border" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                    <i class="bi bi-bell fs-5 text-dark"></i>
+                    <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0" style="width: 320px; max-height: 420px; overflow-y: auto;">
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
+                        <h6 class="mb-0 fw-semibold"><i class="bi bi-bell me-2 text-success"></i>Notifications</h6>
+                        <a href="#" id="markAllReadBtn" class="small text-decoration-none text-success">Mark all read</a>
+                    </div>
+                    <div id="notifList">
+                        <div class="text-center py-3 text-muted small">Loading...</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ==================================================
              STATISTICS
         ================================================== -->
-
         <div class="row g-4 mb-4">
-
-
             <!-- AVAILABLE FOOD -->
-
             <div class="col-md-6 col-xl-4">
-
                 <div class="stat-card">
-
                     <div class="stat-icon green-icon">
-
                         <i class="bi bi-basket2"></i>
-
                     </div>
-
-                    <h3 id="availableCount">
-                        0
-                    </h3>
-
-                    <p>
-                        Available Food
-                    </p>
-
+                    <h3 id="availableCount">0</h3>
+                    <p>Available Food</p>
                 </div>
-
             </div>
 
             <!-- MY CLAIMS -->
-
             <div class="col-md-6 col-xl-4">
-
                 <div class="stat-card">
-
                     <div class="stat-icon blue-icon">
-
                         <i class="bi bi-hand-thumbs-up"></i>
-
                     </div>
-
-                    <h3 id="claimedCount">
-                        0
-                    </h3>
-
-                    <p>
-                        My Claims
-                    </p>
-
+                    <h3 id="claimedCount">0</h3>
+                    <p>My Claims</p>
                 </div>
-
             </div>
 
             <!-- RECEIVED -->
-
             <div class="col-md-6 col-xl-4">
-
                 <div class="stat-card">
-
                     <div class="stat-icon purple-icon">
-
                         <i class="bi bi-check-circle"></i>
-
                     </div>
-
-                    <h3 id="deliveredCount">
-                        0
-                    </h3>
-
-                    <p>
-                        Received
-                    </p>
-
+                    <h3 id="deliveredCount">0</h3>
+                    <p>Received</p>
                 </div>
-
             </div>
-
-
         </div>
 
         <!-- ==================================================
-             AVAILABLE FOOD
+             AVAILABLE FOOD SECTION
         ================================================== -->
-
         <div class="food-card card mb-4" id="availableFood">
-
-            <!-- HEADER -->
-
             <div class="card-header">
-
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
                     <div>
-
-                        <h4>
-                            Available Food
-                        </h4>
-
-                        <p class="text-muted mb-0">
-                            Find surplus food available near you.
-                        </p>
-
+                        <h4>Available Food</h4>
+                        <p class="text-muted mb-0">Find surplus food available near you.</p>
                     </div>
 
-                    <!-- SEARCH -->
+                    <!-- SEARCH & FILTER -->
                     <div class="d-flex gap-2 align-items-center">
-
-                        
-
                         <input type="text" id="foodSearch" class="form-control" placeholder="Search food...">
-
-                        <select id="radiusFilter" class="form-select" style="width: 100px; ">
+                        <select id="radiusFilter" class="form-select" style="width: 100px;">
                             <option value="5">5 km</option>
                             <option value="10">10 km</option>
                         </select>
-
-                        <button type="button" id="searchBtn" class="btn btn-primary" >
-
+                        <button type="button" id="searchBtn" class="btn btn-primary">
                             <i class="bi bi-search"></i>
-
                         </button>
-
                     </div>
-
                 </div>
-
             </div>
 
             <!-- FOOD GRID -->
-
             <div class="card-body">
-
                 <div class="row g-4" id="foodGrid">
-
-
                     <!-- LOADING -->
-
                     <div class="col-12" id="foodLoading">
-
                         <div class="text-center py-4">
-
                             <div class="spinner-border text-primary" role="status"></div>
-
-                            <p class="mt-3 text-muted">
-                                Loading available food...
-                            </p>
-
+                            <p class="mt-3 text-muted">Loading available food...</p>
                         </div>
-
                     </div>
-
-
                 </div>
-
             </div>
-
-
         </div>
 
         <!-- ==================================================
-             MY CLAIMS
+             MY CLAIMS SECTION
         ================================================== -->
-
         <div class="food-card card mb-4" id="myClaims">
-
-
-            <!-- HEADER -->
-
             <div class="card-header">
-
-                <h4>
-                    My Claims
-                </h4>
-
-                <p class="text-muted mb-0">
-                    Food you have claimed.
-                </p>
-
+                <h4>My Claims</h4>
+                <p class="text-muted mb-0">Food you have claimed and received.</p>
             </div>
-
-
 
             <!-- CLAIMS -->
-
             <div class="card-body">
-
                 <div class="row g-4" id="claimsGrid">
-
-
                     <!-- LOADING -->
-
                     <div class="col-12" id="claimsLoading">
-
                         <div class="text-center py-4">
-
                             <div class="spinner-border text-primary" role="status"></div>
-
-                            <p class="mt-3 text-muted">
-                                Loading your claims...
-                            </p>
-
+                            <p class="mt-3 text-muted">Loading your claims...</p>
                         </div>
-
                     </div>
-
-
                 </div>
-
             </div>
-
-
         </div>
     </main>
 
     <!-- ==================================================
-         BOOTSTRAP JS
+         FEEDBACK MODAL
     ================================================== -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-success"><i class="bi bi-star-fill text-warning me-2"></i>Give Feedback</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <p class="text-muted small">Share your experience regarding this food donation to help donors maintain quality.</p>
+                    <div class="alert alert-light border py-2 mb-3">
+                        <small class="text-muted d-block">Food Listing:</small>
+                        <strong id="feedbackFoodTitle" class="text-dark">-</strong>
+                    </div>
+                    <form id="feedbackForm">
+                        <input type="hidden" id="feedbackFoodId">
+                        <div class="mb-3">
+                            <label for="feedbackRating" class="form-label fw-semibold">Rating <span class="text-danger">*</span></label>
+                            <select id="feedbackRating" class="form-select" required>
+                                <option value="">Select a rating</option>
+                                <option value="5">⭐⭐⭐⭐⭐ 5 Stars - Excellent Quality & Fresh</option>
+                                <option value="4">⭐⭐⭐⭐ 4 Stars - Very Good</option>
+                                <option value="3">⭐⭐⭐ 3 Stars - Average / Acceptable</option>
+                                <option value="2">⭐⭐ 2 Stars - Fair</option>
+                                <option value="1">⭐ 1 Star - Poor Quality</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="feedbackComment" class="form-label fw-semibold">Comments / Message (Optional)</label>
+                            <textarea id="feedbackComment" class="form-control" rows="3" maxlength="500" placeholder="e.g. The food was fresh, neatly packed, and served immediately to our community members. Thank you!"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success btn-sm px-4" id="submitFeedbackBtn">
+                        <i class="bi bi-send me-1"></i> Submit Feedback
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- ==================================================
+         SCRIPTS
+    ================================================== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
-    <!-- ==================================================
-         JQUERY
-    ================================================== -->
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.js"></script>
-
-
-    <!-- ==================================================
-         RECIPIENT DASHBOARD JS
-    ================================================== -->
-
+    <script src="JS/notifications.js"></script>
     <script src="JS/recipient-dashboard.js"></script>
-
-
 </body>
 
 </html>

@@ -2,7 +2,7 @@
 
 header("Content-Type: application/json");
 
-require_once "../config/db.php";
+require_once __DIR__ . "/../config/db.php";
 
 try {
 
@@ -75,18 +75,6 @@ try {
 
     // =====================================================
     // GET CLAIMS TO DISPLAY
-    //
-    // Normal CLAIMED items are displayed.
-    //
-    // DELIVERED items are displayed ONLY for 12 hours
-    // after delivered_at.
-    //
-    // If delivered_at is NULL, the delivered item is
-    // hidden because we don't know when it was delivered.
-    //
-    // IMPORTANT:
-    // This affects ONLY the visible claims list.
-    // It does NOT affect the Received count.
     // =====================================================
 
     $claimStmt = $pdo->prepare("
@@ -103,11 +91,15 @@ try {
 
             fc.delivered_at,
 
+            fl.donor_id,
+
             fl.food_title,
 
             fl.category,
 
             fl.quantity,
+
+            fl.image,
 
             fl.pickup_address,
 
@@ -117,12 +109,21 @@ try {
 
             fl.expiry_datetime,
 
-            fl.status
+            fl.status,
+
+            fb.id AS feedback_id,
+
+            fb.rating AS feedback_rating,
+
+            fb.comment AS feedback_comment
 
         FROM food_claims fc
 
         INNER JOIN food_listings fl
             ON fc.food_id = fl.id
+
+        LEFT JOIN feedback fb
+            ON fb.food_id = fl.id AND fb.recipient_id = fc.recipient_id
 
         WHERE fc.recipient_id = ?
 
@@ -136,7 +137,7 @@ try {
 
                 AND fc.delivered_at IS NOT NULL
 
-                AND fc.delivered_at > DATE_SUB(NOW(), INTERVAL 12 HOUR)
+                AND fc.delivered_at > DATE_SUB(NOW(), INTERVAL 7 DAY)
 
             )
 
@@ -153,21 +154,6 @@ try {
 
     // =====================================================
     // GET STATISTICS
-    //
-    // Received is TOTAL delivered food.
-    //
-    // This query intentionally DOES NOT use the 12-hour
-    // filter.
-    //
-    // Therefore:
-    //
-    // Delivered 2 hours ago  -> counted
-    // Delivered 10 hours ago -> counted
-    // Delivered 20 hours ago -> counted
-    // Delivered 5 days ago   -> counted
-    //
-    // They may disappear from My Claims, but they remain
-    // part of the Received total.
     // =====================================================
 
     $statsStmt = $pdo->prepare("

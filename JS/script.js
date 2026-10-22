@@ -117,10 +117,12 @@ $(document).ready(function () {
                     }
 
                     else if (response.user.role.toUpperCase() === "RECIPIENT") {
-
                         window.location.href =
                             "recipient-dashboard.html";
-
+                    }
+                    else if (response.user.role.toUpperCase() === "ADMIN") {
+                        window.location.href =
+                            "admin-dashboard.html";
                     }
 
                     else {
@@ -226,6 +228,8 @@ $(document).ready(function () {
             $("#ngoNameError").text("");
 
             $("#contactPersonError").text("");
+            $("#recipientPhone").val("");
+            $("#recipientPhoneError").text("");
 
         }
 
@@ -444,6 +448,8 @@ $(document).ready(function () {
 
         let contactPerson =
             $("#contactPerson").val().trim();
+        let recipientPhone =
+            $("#recipientPhone").val() ? $("#recipientPhone").val().trim() : "";
 
 
         /* -------------------------------------
@@ -520,10 +526,13 @@ $(document).ready(function () {
 
 
             if (contactPerson === "") {
-
                 $("#contactPersonError")
                     .text("Contact Person is required");
-
+                isValid = false;
+            }
+            if (recipientPhone === "") {
+                $("#recipientPhoneError")
+                    .text("Phone Number is required");
                 isValid = false;
             }
 
@@ -685,7 +694,7 @@ $(document).ready(function () {
             phone:
                 selectedRole === "DONOR"
                     ? phone
-                    : "",
+                    : recipientPhone,
 
 
             /* -------------------------------

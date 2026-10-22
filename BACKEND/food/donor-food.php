@@ -1,9 +1,8 @@
-
 <?php
 
 header("Content-Type: application/json");
 
-require_once "../config/db.php";
+require_once __DIR__ . "/../config/db.php";
 
 try {
 
@@ -27,6 +26,9 @@ try {
         ]);
         exit;
     }
+
+    // AUTO-UPDATE EXPIRED
+    $pdo->exec("UPDATE food_listings SET status = 'EXPIRED' WHERE status = 'AVAILABLE' AND expiry_datetime <= NOW()");
 
     // GET STATISTICS
     $statsSql = "
@@ -75,14 +77,13 @@ try {
     $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);
 
     // GET FOOD LISTINGS
-    // Show EXPIRED for expired donations that
-    // are still stored as AVAILABLE.
     $foodSql = "
         SELECT
             f.id,
             f.food_title,
             f.category,
             f.quantity,
+            f.image,
             f.pickup_address,
             f.latitude,
             f.longitude,
@@ -101,13 +102,19 @@ try {
             u.ngo_name AS ngo_name,
             u.contact_person AS contact_person,
             u.phone AS recipient_phone,
-            u.address AS recipient_address
+            u.address AS recipient_address,
+
+            fb.rating AS feedback_rating,
+            fb.comment AS feedback_comment
 
         FROM food_listings f
 
         LEFT JOIN users u
             ON f.claimed_by = u.id
             AND u.role = 'RECIPIENT'
+
+        LEFT JOIN feedback fb
+            ON fb.food_id = f.id
 
         WHERE f.donor_id = :donor_id
 

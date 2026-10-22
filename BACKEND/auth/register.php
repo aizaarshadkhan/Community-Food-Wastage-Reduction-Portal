@@ -319,12 +319,14 @@ try {
                 password,
                 ngo_name,
                 contact_person,
+                phone,
                 address,
                 latitude,
                 longitude
             )
             VALUES
             (
+                ?,
                 ?,
                 ?,
                 ?,
@@ -346,6 +348,7 @@ try {
             $hashedPassword,
             $ngo_name,
             $contact_person,
+            $phone !== '' ? $phone : null,
             $address,
             $latitude,
             $longitude

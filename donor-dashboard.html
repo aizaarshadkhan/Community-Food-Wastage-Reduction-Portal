@@ -66,11 +66,9 @@
                 Add Food
             </a>
 
-
             <a href="donor-profile.html" class="nav-link">
                 <i class="bi bi-person"></i>
                 Profile
-
             </a>
 
         </nav>
@@ -99,18 +97,29 @@
     <main class="main">
 
 
-        <!-- WELCOME -->
+        <!-- WELCOME & NOTIFICATIONS -->
+        <div class="welcome d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1>Welcome back, Donor! 👋</h1>
+                <p>Here's what's happening with your food donations.</p>
+            </div>
 
-        <div class="welcome">
-
-            <h1>
-                Welcome back, Donor! 👋
-            </h1>
-
-            <p>
-                Here's what's happening with your food donations.
-            </p>
-
+            <!-- Notification Bell -->
+            <div class="dropdown position-relative">
+                <button class="btn btn-white bg-white shadow-sm rounded-circle position-relative p-2 border" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                    <i class="bi bi-bell fs-5 text-dark"></i>
+                    <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0" style="width: 320px; max-height: 420px; overflow-y: auto;">
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
+                        <h6 class="mb-0 fw-semibold"><i class="bi bi-bell me-2 text-success"></i>Notifications</h6>
+                        <a href="#" id="markAllReadBtn" class="small text-decoration-none text-success">Mark all read</a>
+                    </div>
+                    <div id="notifList">
+                        <div class="text-center py-3 text-muted small">Loading...</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -170,9 +179,9 @@
 
                 <div class="stat-card">
 
-                    <div class="stat-icon purple-icon">
+                    <div class="stat-icon orange-icon">
 
-                        <i class="bi bi-hand-index-thumb"></i>
+                        <i class="bi bi-clock-history"></i>
 
                     </div>
 
@@ -191,7 +200,7 @@
 
                 <div class="stat-card">
 
-                    <div class="stat-icon orange-icon">
+                    <div class="stat-icon purple-icon">
 
                         <i class="bi bi-truck"></i>
 
@@ -205,150 +214,79 @@
 
             </div>
 
+
         </div>
 
 
 
         <!-- =================================================
-             FOOD + ADD FOOD
+             RECENT FOOD LISTINGS
         ================================================== -->
 
-        <div class="row g-4">
+        <div class="food-card card">
 
 
-            <!-- FOOD LIST -->
+            <!-- CARD HEADER -->
 
-            <div class="col-lg-8">
+            <div class="card-header food-card-header">
 
-                <div class="food-card card">
+                <div>
 
+                    <h4>
+                        Recent Food Listings
+                    </h4>
 
-                    <div class="card-header d-flex justify-content-between align-items-center">
-
-                        <h4>
-                            My Food Listings
-                        </h4>
-
-
-                        <a href="my-food.html" class="btn btn-sm btn-outline-primary">
-
-                            View All
-
-                        </a>
-
-                    </div>
-
-
-
-                    <div class="table-responsive">
-
-                        <table class="table food-table">
-
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>Food</th>
-
-                                    <th>Quantity</th>
-
-                                    <th>Status</th>
-
-                                    <th>Expiry</th>
-
-                                    <th></th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-                                <!--
-                                    JavaScript will load
-                                    the latest 5 food listings here.
-                                -->
-
-                            </tbody>
-
-
-                        </table>
-
-                    </div>
+                    <p>
+                        Your latest food donations and their status.
+                    </p>
 
                 </div>
+
+
+                <a href="add-food.html" class="add-food-top-btn">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                    Add Food
+
+                </a>
 
             </div>
 
 
 
-            <!-- =================================================
-                 ADD FOOD
-            ================================================== -->
+            <!-- FOOD TABLE -->
 
-            <div class="col-lg-4">
+            <div class="table-responsive">
 
+                <table class="table food-table">
 
-                <div class="add-food-card">
+                    <thead>
 
-                    <h4>
-                        Add New Food
-                    </h4>
+                        <tr>
 
-                    <p>
-                        Have surplus food? Share it with someone who needs it.
-                    </p>
+                            <th>Food</th>
 
+                            <th>Quantity</th>
 
-                    <div class="text-center my-4">
+                            <th>Status</th>
 
-                        <i class="bi bi-basket2" style="font-size: 65px; color: #087f6c;">
-                        </i>
+                            <th>Expiry</th>
 
-                    </div>
+                            <th>Actions</th>
 
+                        </tr>
 
-                    <button class="add-food-btn" onclick="window.location.href='add-food.html';">
-
-                        <i class="bi bi-plus-lg"></i> Add Food Listing
-                    </button>
-
-                </div>
+                    </thead>
 
 
+                    <tbody>
 
-                <!-- QUICK TIPS -->
+                        <!-- JS loads food rows here -->
 
-                <div class="tips">
+                    </tbody>
 
-                    <h5>
-
-                        <i class="bi bi-lightbulb"></i>
-
-                        Quick Tips
-
-                    </h5>
-
-
-                    <ul class="mt-3">
-
-                        <li>
-                            Provide accurate food details.
-                        </li>
-
-                        <li>
-                            Set the correct expiry time.
-                        </li>
-
-                        <li>
-                            Keep food safely packaged.
-                        </li>
-
-                    </ul>
-
-                </div>
+                </table>
 
             </div>
 
@@ -359,55 +297,50 @@
 
 
     <!-- =====================================================
-         FOOD OPTIONS MODAL
+         FOOD DETAILS MODAL
     ====================================================== -->
 
-    <div class="modal fade" id="foodOptionsModal" tabindex="-1" aria-labelledby="foodOptionsModalLabel"
-        aria-hidden="true">
-
+    <div class="modal fade" id="foodDetailsModal" tabindex="-1">
 
         <div class="modal-dialog modal-dialog-centered">
-
 
             <div class="modal-content">
 
 
-                <!-- MODAL HEADER -->
+                <!-- HEADER -->
 
                 <div class="modal-header">
 
-                    <h5 class="modal-title" id="foodOptionsModalLabel">
-
-                        Food Listing Options
-
+                    <h5 class="modal-title">
+                        Food Listing Details
                     </h5>
 
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
                     </button>
 
                 </div>
 
 
-
-                <!-- MODAL BODY -->
+                <!-- BODY -->
 
                 <div class="modal-body">
 
+                    <!-- FOOD PHOTO -->
+                    <div id="modalFoodPhotoContainer" class="mb-3 text-center d-none">
+                        <img id="modalFoodPhoto" src="" alt="Food Photo" class="img-fluid rounded border" style="max-height: 200px; width: 100%; object-fit: cover;">
+                    </div>
 
                     <!-- FOOD TITLE -->
 
                     <div class="mb-3">
 
                         <small class="text-muted">
-                            Food
+                            Food Title
                         </small>
 
-                        <h5 id="modalFoodTitle" class="mb-0">
-
+                        <div id="modalFoodTitle" class="fw-semibold">
                             -
-
-                        </h5>
+                        </div>
 
                     </div>
 
@@ -481,72 +414,6 @@
 
                     </div>
 
-                    <!-- RECEIVER DETAILS -->
-
-                    <div class="detail-item">
-
-                        <small>
-                            Receiver Details
-                        </small>
-
-                        <span id="modalReceiverDetails">
-                            -
-                        </span>
-
-                    </div>
-
-
-                    <div class="detail-item">
-
-                        <small>
-                            Organization / NGO
-                        </small>
-
-                        <span id="modalOrganization">
-                            -
-                        </span>
-
-                    </div>
-
-
-                    <div class="detail-item">
-
-                        <small>
-                            Contact Person
-                        </small>
-
-                        <span id="modalContactPerson">
-                            -
-                        </span>
-
-                    </div>
-
-
-                    <div class="detail-item">
-
-                        <small>
-                            Phone
-                        </small>
-
-                        <span id="modalPhone">
-                            -
-                        </span>
-
-                    </div>
-
-
-                    <div class="detail-item">
-
-                        <small>
-                            Receiver Address
-                        </small>
-
-                        <span id="modalReceiverAddress">
-                            -
-                        </span>
-
-                    </div>
-
                     <!-- EXPIRY -->
 
                     <div class="mb-3">
@@ -561,9 +428,35 @@
 
                     </div>
 
+                    <!-- RECEIVER DETAILS SECTION -->
+                    <div id="receiverDetailsSection" class="mt-3 pt-3 border-top">
+                        <h6 class="fw-bold text-primary mb-2">Claim / Receiver Info</h6>
+                        <div class="detail-item mb-1">
+                            <small class="text-muted">Organization / NGO:</small>
+                            <span id="modalOrganization" class="fw-semibold ms-1">-</span>
+                        </div>
+                        <div class="detail-item mb-1">
+                            <small class="text-muted">Contact Person:</small>
+                            <span id="modalContactPerson" class="ms-1">-</span>
+                        </div>
+                        <div class="detail-item mb-1">
+                            <small class="text-muted">Phone:</small>
+                            <span id="modalPhone" class="ms-1">-</span>
+                        </div>
+                        <div class="detail-item mb-1">
+                            <small class="text-muted">Address:</small>
+                            <span id="modalReceiverAddress" class="ms-1">-</span>
+                        </div>
+                    </div>
 
-
-
+                    <!-- FEEDBACK SECTION -->
+                    <div id="modalFeedbackContainer" class="mt-3 p-3 bg-light rounded border d-none">
+                        <small class="text-muted d-block fw-bold text-success mb-1">
+                            <i class="bi bi-star-fill text-warning me-1"></i>Recipient Feedback
+                        </small>
+                        <div id="modalFeedbackRating" class="fw-bold text-warning small">-</div>
+                        <div id="modalFeedbackComment" class="small text-muted fst-italic mt-1">-</div>
+                    </div>
 
                 </div>
 
@@ -592,9 +485,10 @@
 
 
     <!-- =====================================================
-         DONOR DASHBOARD JS
+         NOTIFICATIONS & DONOR DASHBOARD JS
     ====================================================== -->
 
+    <script src="JS/notifications.js"></script>
     <script src="JS/donor-dashboard.js"></script>
 
 

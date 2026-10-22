@@ -200,21 +200,7 @@ $(document).ready(function () {
     // LOGOUT
     // ==========================================
 
-    $("#logoutBtn").click(function (e) {
-
-        e.preventDefault();
-
-
-        localStorage.removeItem("user_id");
-
-        localStorage.removeItem("role");
-
-        localStorage.removeItem("email");
-
-
-        window.location.href = "login.html";
-
-    });
+    $("#logoutBtn").click(function (e) {`r`n        e.preventDefault();`r`n        window.location.href = "logout.html";`r`n    });
 
 
     // ==========================================
