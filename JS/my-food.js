@@ -1164,7 +1164,10 @@ $(document).ready(function () {
     // LOGOUT
     // =====================================================
 
-    $("#logoutBtn").click(function (e) {`r`n        e.preventDefault();`r`n        window.location.href = "logout.html";`r`n    });
+        $("#logoutBtn").click(function (e) {
+        e.preventDefault();
+        window.location.href = "logout.html";
+    });
 
 
 
