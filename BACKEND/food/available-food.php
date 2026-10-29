@@ -1,319 +1,136 @@
 <?php
+/**
+ * available-food.php - API to search and retrieve nearby available food listings
+ * Uses the Haversine formula to calculate geographic distance between recipient and food listings.
+ * 
+ * Requirements Handled:
+ * - Interactive Map / Search: Filter food by distance/radius and location.
+ * - User Management: Returns recipient's verification_status.
+ */
 
 header("Content-Type: application/json");
-
 require_once __DIR__ . "/../config/db.php";
 
 try {
-
-    // =====================================================
-    // GET RECIPIENT ID
-    // =====================================================
-
+    // 1. Validate Recipient ID
     $recipientId = $_GET["recipient_id"] ?? null;
-
-    if (!$recipientId) {
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Recipient ID is required."
-        ]);
-
+    if (!$recipientId || (int)$recipientId <= 0) {
+        echo json_encode(["success" => false, "message" => "Valid Recipient ID is required."]);
         exit;
     }
+    $recipientId = (int)$recipientId;
 
-    $recipientId = (int) $recipientId;
-
-    if ($recipientId <= 0) {
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Invalid recipient ID."
-        ]);
-
-        exit;
+    // 2. Validate Radius (Default 10 km, allows 5, 10, 25, 50 km)
+    $radius = isset($_GET["radius"]) ? (float)$_GET["radius"] : 10.0;
+    if ($radius <= 0 || $radius > 100) {
+        $radius = 10.0;
     }
 
-
-    // =====================================================
-    // GET RADIUS
-    // =====================================================
-
-    $radius = isset($_GET["radius"])
-        ? (float) $_GET["radius"]
-        : 5.0;
-
-    // Allow only 5 KM or 10 KM
-
-    if ($radius != 5.0 && $radius != 10.0) {
-        $radius = 5.0;
-    }
-
-
-    // =====================================================
-    // GET RECIPIENT LOCATION FROM USERS TABLE
-    // =====================================================
-
+    // 3. Retrieve Recipient's Profile & Location Coordinates
     $userStmt = $pdo->prepare("
-        SELECT
-            id,
-            role,
-            latitude,
-            longitude
+        SELECT id, role, ngo_name, latitude, longitude, verification_status
         FROM users
         WHERE id = ?
         LIMIT 1
     ");
-
-    $userStmt->execute([
-        $recipientId
-    ]);
-
+    $userStmt->execute([$recipientId]);
     $recipient = $userStmt->fetch(PDO::FETCH_ASSOC);
 
-
-    // =====================================================
-    // CHECK RECIPIENT
-    // =====================================================
-
-    if (!$recipient) {
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Recipient not found."
-        ]);
-
+    if (!$recipient || strtoupper(trim($recipient["role"])) !== "RECIPIENT") {
+        echo json_encode(["success" => false, "message" => "Recipient organization not found."]);
         exit;
     }
 
-
-    // =====================================================
-    // CHECK ROLE
-    // =====================================================
-
-    if (
-        strtoupper(trim($recipient["role"] ?? ""))
-        !== "RECIPIENT"
-    ) {
-
+    // Check if recipient has pinned their GPS location
+    if ($recipient["latitude"] === null || $recipient["longitude"] === null || $recipient["latitude"] === "" || $recipient["longitude"] === "") {
         echo json_encode([
             "success" => false,
-            "message" => "Invalid recipient."
+            "message" => "Your GPS location is required. Please update your address or location in Profile."
         ]);
-
         exit;
     }
 
+    $recipientLatitude = (float)$recipient["latitude"];
+    $recipientLongitude = (float)$recipient["longitude"];
+    $verificationStatus = $recipient["verification_status"] ?? "PENDING";
 
-    // =====================================================
-    // CHECK LOCATION
-    // =====================================================
-
-    if (
-        $recipient["latitude"] === null ||
-        $recipient["longitude"] === null ||
-        $recipient["latitude"] === "" ||
-        $recipient["longitude"] === ""
-    ) {
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Your current location is required. Please update your location first."
-        ]);
-
-        exit;
-    }
-
-
-    // =====================================================
-    // CONVERT LOCATION TO FLOAT
-    // =====================================================
-
-    $recipientLatitude =
-        (float) $recipient["latitude"];
-
-    $recipientLongitude =
-        (float) $recipient["longitude"];
-
-
-    // =====================================================
-    // FIND NEARBY AVAILABLE FOOD
-    // =====================================================
-    //
-    // Haversine formula
-    //
-    // 6371 = Earth's radius in KM
-    //
-    // =====================================================
-
+    // 4. Query Available Food Listings within the Specified Radius using Haversine Formula
+    // 6371 = Earth's mean radius in Kilometers
     $sql = "
-
         SELECT
-
-            id,
-
-            donor_id,
-
-            food_title,
-
-            category,
-
-            quantity,
-
-            image,
-
-            pickup_address,
-
-            latitude,
-
-            longitude,
-
-            expiry_datetime,
-
-            status,
-
-            created_at,
-
+            fl.id,
+            fl.donor_id,
+            fl.food_title,
+            fl.category,
+            fl.quantity,
+            fl.image,
+            fl.pickup_address,
+            fl.latitude,
+            fl.longitude,
+            fl.expiry_datetime,
+            fl.status,
+            fl.created_at,
+            u.business_name AS donor_name,
+            u.phone AS donor_phone,
             (
                 6371 * ACOS(
                     LEAST(
                         1,
                         GREATEST(
                             -1,
-
-                            COS(
-                                RADIANS(?)
-                            )
-
-                            *
-
-                            COS(
-                                RADIANS(latitude)
-                            )
-
-                            *
-
-                            COS(
-                                RADIANS(longitude)
-                                -
-                                RADIANS(?)
-                            )
-
-                            +
-
-                            SIN(
-                                RADIANS(?)
-                            )
-
-                            *
-
-                            SIN(
-                                RADIANS(latitude)
-                            )
+                            COS(RADIANS(?)) * COS(RADIANS(fl.latitude)) * COS(RADIANS(fl.longitude) - RADIANS(?))
+                            + SIN(RADIANS(?)) * SIN(RADIANS(fl.latitude))
                         )
                     )
                 )
             ) AS distance_km
-
-        FROM food_listings
-
-        WHERE status = 'AVAILABLE'
-
-        AND expiry_datetime > NOW()
-
-        AND latitude IS NOT NULL
-
-        AND longitude IS NOT NULL
-
+        FROM food_listings fl
+        LEFT JOIN users u ON fl.donor_id = u.id
+        WHERE fl.status = 'AVAILABLE'
+          AND fl.expiry_datetime > NOW()
+          AND fl.latitude IS NOT NULL
+          AND fl.longitude IS NOT NULL
         HAVING distance_km <= ?
-
         ORDER BY distance_km ASC
     ";
 
-
-    // =====================================================
-    // EXECUTE QUERY
-    // =====================================================
-
     $foodStmt = $pdo->prepare($sql);
-
     $foodStmt->execute([
-
         $recipientLatitude,
-
         $recipientLongitude,
-
         $recipientLatitude,
-
         $radius
-
     ]);
-
-
-    // =====================================================
-    // GET FOOD
-    // =====================================================
 
     $food = $foodStmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-    // =====================================================
-    // FORMAT DISTANCE
-    // =====================================================
-
+    // Format distance to 2 decimal places
     foreach ($food as &$item) {
-
-        $item["distance_km"] =
-            round(
-                (float) $item["distance_km"],
-                2
-            );
+        $item["distance_km"] = round((float)$item["distance_km"], 2);
     }
-
     unset($item);
 
-
-    // =====================================================
-    // RESPONSE
-    // =====================================================
-
+    // 5. Return JSON payload
     echo json_encode([
-
         "success" => true,
-
         "radius_km" => $radius,
-
-        "recipient_location" => [
-
-            "latitude" =>
-                $recipientLatitude,
-
-            "longitude" =>
-                $recipientLongitude
-
+        "verification_status" => $verificationStatus,
+        "recipient" => [
+            "id" => $recipientId,
+            "name" => $recipient["ngo_name"],
+            "latitude" => $recipientLatitude,
+            "longitude" => $recipientLongitude,
+            "verification_status" => $verificationStatus
         ],
-
-        "count" =>
-            count($food),
-
-        "food" =>
-            $food
-
+        "count" => count($food),
+        "food" => $food
     ]);
-
 
 } catch (PDOException $e) {
-
-    // Show real error while testing
-
+    error_log("available-food error: " . $e->getMessage());
     echo json_encode([
-
         "success" => false,
-
-        "message" =>
-            "Database error: " . $e->getMessage()
-
+        "message" => "Database error while fetching available food."
     ]);
-
 }
 ?>

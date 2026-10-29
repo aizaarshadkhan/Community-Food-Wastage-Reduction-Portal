@@ -4,73 +4,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipient Dashboard . MealBridge</title>
+    <title>Recipient Dashboard - MealBridge</title>
 
-    <!-- Bootstrap -->
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet Map CSS (Interactive Map Requirement) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="IMG/logo.png">
     <!-- Main CSS -->
-    <link rel="stylesheet" href="CSS/style6.css">
+    <link rel="stylesheet" href="CSS/style.css">
+
+    <style>
+        #recipientMap {
+            height: 380px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+        }
+        .map-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            padding: 5px;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- ==================================================
-         SIDEBAR
-    ================================================== -->
+    <!-- ============================================================
+         SIDEBAR NAVIGATION
+    ============================================================ -->
     <aside class="sidebar">
-        <!-- LOGO -->
+        <!-- Logo & Branding -->
         <div class="logo">
             <img src="IMG/logo-white.png" alt="MealBridge Logo">
             <h2>Meal<span class="green">Bridge</span></h2>
             <p>Share Food. Share Hope.</p>
         </div>
 
-        <!-- NAVIGATION -->
+        <!-- Navigation Links -->
         <nav class="nav flex-column">
             <a href="recipient-dashboard.html" class="nav-link active">
-                <i class="bi bi-grid"></i>
-                Dashboard
+                <i class="bi bi-grid"></i> Dashboard
+            </a>
+            <a href="#mapSection" class="nav-link">
+                <i class="bi bi-geo-alt"></i> Food Map
             </a>
             <a href="#availableFood" class="nav-link">
-                <i class="bi bi-basket2"></i>
-                Available Food
+                <i class="bi bi-basket2"></i> Available Food
             </a>
             <a href="#myClaims" class="nav-link">
-                <i class="bi bi-hand-thumbs-up"></i>
-                My Claims
+                <i class="bi bi-hand-thumbs-up"></i> My Claims
             </a>
             <a href="recipient-profile.html" class="nav-link">
-                <i class="bi bi-person"></i>
-                Profile
+                <i class="bi bi-person"></i> Profile
             </a>
         </nav>
 
-        <!-- LOGOUT -->
+        <!-- Logout Action -->
         <div class="logout">
             <a href="logout.html" id="logoutBtn" class="nav-link">
-                <i class="bi bi-box-arrow-left"></i>
-                Logout
+                <i class="bi bi-box-arrow-left"></i> Logout
             </a>
         </div>
     </aside>
 
-    <!-- ==================================================
-         MAIN
-    ================================================== -->
+    <!-- ============================================================
+         MAIN CONTENT AREA
+    ============================================================ -->
     <main class="main">
-        <!-- WELCOME & NOTIFICATIONS -->
-        <div class="welcome d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <!-- Top Welcome Bar & In-App Notification Dropdown -->
+        <div class="welcome d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
             <div>
-                <h1>Welcome back, Recipient! 👋</h1>
-                <p>Find and claim surplus food near you.</p>
+                <h1 id="welcomeGreeting">Welcome back, Recipient! 👋</h1>
+                <p>Find and claim surplus food donations near your location in real-time.</p>
             </div>
 
-            <!-- Notification Bell -->
+            <!-- In-App Notification Engine Bell -->
             <div class="dropdown position-relative">
                 <button class="btn btn-white bg-white shadow-sm rounded-circle position-relative p-2 border" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
                     <i class="bi bi-bell fs-5 text-dark"></i>
@@ -88,100 +109,114 @@
             </div>
         </div>
 
-        <!-- ==================================================
-             STATISTICS
-        ================================================== -->
+        <!-- Verification Notice Alert Banner (For Pending NGOs) -->
+        <div id="verificationAlert" class="alert alert-warning border-warning d-none align-items-center mb-4" role="alert">
+            <i class="bi bi-shield-exclamation fs-4 me-3 text-warning"></i>
+            <div>
+                <strong>Account Pending Admin Verification:</strong>
+                Your NGO documents are currently under review. You can browse nearby listings on the map, but claiming donations will be enabled once your account is verified.
+            </div>
+        </div>
+
+        <!-- Summary Statistics Row -->
         <div class="row g-4 mb-4">
-            <!-- AVAILABLE FOOD -->
-            <div class="col-md-6 col-xl-4">
+            <div class="col-md-4">
                 <div class="stat-card">
-                    <div class="stat-icon green-icon">
-                        <i class="bi bi-basket2"></i>
-                    </div>
+                    <div class="stat-icon green-icon"><i class="bi bi-basket2"></i></div>
                     <h3 id="availableCount">0</h3>
-                    <p>Available Food</p>
+                    <p>Available Food Nearby</p>
                 </div>
             </div>
-
-            <!-- MY CLAIMS -->
-            <div class="col-md-6 col-xl-4">
+            <div class="col-md-4">
                 <div class="stat-card">
-                    <div class="stat-icon blue-icon">
-                        <i class="bi bi-hand-thumbs-up"></i>
-                    </div>
+                    <div class="stat-icon blue-icon"><i class="bi bi-hand-thumbs-up"></i></div>
                     <h3 id="claimedCount">0</h3>
-                    <p>My Claims</p>
+                    <p>Active Claims Reserved</p>
                 </div>
             </div>
-
-            <!-- RECEIVED -->
-            <div class="col-md-6 col-xl-4">
+            <div class="col-md-4">
                 <div class="stat-card">
-                    <div class="stat-icon purple-icon">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
+                    <div class="stat-icon purple-icon"><i class="bi bi-check-circle"></i></div>
                     <h3 id="deliveredCount">0</h3>
-                    <p>Received</p>
+                    <p>Meals Received & Delivered</p>
                 </div>
             </div>
         </div>
 
-        <!-- ==================================================
-             AVAILABLE FOOD SECTION
-        ================================================== -->
+        <!-- ============================================================
+             INTERACTIVE MAP SECTION (Functional Requirement 3)
+        ============================================================ -->
+        <div class="map-card" id="mapSection">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div>
+                    <h4 class="mb-1"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Live Food Donation Map</h4>
+                    <p class="text-muted mb-0 small">Visual map displaying your location and real-time food donations within your area.</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">
+                        <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> Available Food
+                    </span>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small">
+                        <i class="bi bi-person-fill me-1"></i> Your NGO
+                    </span>
+                </div>
+            </div>
+            <!-- Leaflet Interactive Map Container -->
+            <div id="recipientMap"></div>
+        </div>
+
+        <!-- ============================================================
+             AVAILABLE FOOD LISTINGS & SEARCH FILTER SECTION
+        ============================================================ -->
         <div class="food-card card mb-4" id="availableFood">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div>
-                        <h4>Available Food</h4>
-                        <p class="text-muted mb-0">Find surplus food available near you.</p>
+                        <h4>Available Food Listings</h4>
+                        <p class="text-muted mb-0">Browse surplus food available for pickup near you.</p>
                     </div>
 
-                    <!-- SEARCH & FILTER -->
-                    <div class="d-flex gap-2 align-items-center">
-                        <input type="text" id="foodSearch" class="form-control" placeholder="Search food...">
-                        <select id="radiusFilter" class="form-select" style="width: 100px;">
-                            <option value="5">5 km</option>
-                            <option value="10">10 km</option>
+                    <!-- Search & Radius Filter Controls -->
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <input type="text" id="foodSearch" class="form-control form-control-sm" placeholder="Search food by title/address..." style="width: 220px;">
+                        <select id="radiusFilter" class="form-select form-select-sm" style="width: 120px;">
+                            <option value="5">Within 5 km</option>
+                            <option value="10" selected>Within 10 km</option>
+                            <option value="25">Within 25 km</option>
                         </select>
-                        <button type="button" id="searchBtn" class="btn btn-primary">
-                            <i class="bi bi-search"></i>
+                        <button type="button" id="searchBtn" class="btn btn-primary btn-sm">
+                            <i class="bi bi-search"></i> Search
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- FOOD GRID -->
             <div class="card-body">
                 <div class="row g-4" id="foodGrid">
-                    <!-- LOADING -->
                     <div class="col-12" id="foodLoading">
                         <div class="text-center py-4">
                             <div class="spinner-border text-primary" role="status"></div>
-                            <p class="mt-3 text-muted">Loading available food...</p>
+                            <p class="mt-3 text-muted">Scanning nearby food donations...</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ==================================================
-             MY CLAIMS SECTION
-        ================================================== -->
+        <!-- ============================================================
+             MY CLAIMS & PICKUP HISTORY SECTION
+        ============================================================ -->
         <div class="food-card card mb-4" id="myClaims">
             <div class="card-header">
-                <h4>My Claims</h4>
-                <p class="text-muted mb-0">Food you have claimed and received.</p>
+                <h4>My Claims History</h4>
+                <p class="text-muted mb-0">Manage items reserved for pickup and confirm completed deliveries.</p>
             </div>
-
-            <!-- CLAIMS -->
             <div class="card-body">
                 <div class="row g-4" id="claimsGrid">
-                    <!-- LOADING -->
                     <div class="col-12" id="claimsLoading">
                         <div class="text-center py-4">
                             <div class="spinner-border text-primary" role="status"></div>
-                            <p class="mt-3 text-muted">Loading your claims...</p>
+                            <p class="mt-3 text-muted">Loading your claim history...</p>
                         </div>
                     </div>
                 </div>
@@ -189,38 +224,38 @@
         </div>
     </main>
 
-    <!-- ==================================================
-         FEEDBACK MODAL
-    ================================================== -->
+    <!-- ============================================================
+         FEEDBACK & QUALITY RATING MODAL (Functional Requirement 7)
+    ============================================================ -->
     <div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold text-success"><i class="bi bi-star-fill text-warning me-2"></i>Give Feedback</h5>
+                    <h5 class="modal-title fw-bold text-success"><i class="bi bi-star-fill text-warning me-2"></i>Give Feedback & Rating</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body py-3">
-                    <p class="text-muted small">Share your experience regarding this food donation to help donors maintain quality.</p>
+                    <p class="text-muted small">Rate the food freshness, packaging, and hygiene to build trust within our community.</p>
                     <div class="alert alert-light border py-2 mb-3">
-                        <small class="text-muted d-block">Food Listing:</small>
+                        <small class="text-muted d-block">Donation Title:</small>
                         <strong id="feedbackFoodTitle" class="text-dark">-</strong>
                     </div>
                     <form id="feedbackForm">
                         <input type="hidden" id="feedbackFoodId">
                         <div class="mb-3">
-                            <label for="feedbackRating" class="form-label fw-semibold">Rating <span class="text-danger">*</span></label>
+                            <label for="feedbackRating" class="form-label fw-semibold">Quality & Freshness Rating <span class="text-danger">*</span></label>
                             <select id="feedbackRating" class="form-select" required>
                                 <option value="">Select a rating</option>
-                                <option value="5">⭐⭐⭐⭐⭐ 5 Stars - Excellent Quality & Fresh</option>
-                                <option value="4">⭐⭐⭐⭐ 4 Stars - Very Good</option>
-                                <option value="3">⭐⭐⭐ 3 Stars - Average / Acceptable</option>
-                                <option value="2">⭐⭐ 2 Stars - Fair</option>
-                                <option value="1">⭐ 1 Star - Poor Quality</option>
+                                <option value="5">⭐⭐⭐⭐⭐ 5 Stars - Fresh & Hygienically Packed</option>
+                                <option value="4">⭐⭐⭐⭐ 4 Stars - Very Good Quality</option>
+                                <option value="3">⭐⭐⭐ 3 Stars - Acceptable / Standard</option>
+                                <option value="2">⭐⭐ 2 Stars - Substandard Packaging</option>
+                                <option value="1">⭐ 1 Star - Poor / Unsafe Condition</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="feedbackComment" class="form-label fw-semibold">Comments / Message (Optional)</label>
-                            <textarea id="feedbackComment" class="form-control" rows="3" maxlength="500" placeholder="e.g. The food was fresh, neatly packed, and served immediately to our community members. Thank you!"></textarea>
+                            <label for="feedbackComment" class="form-label fw-semibold">Feedback Comments (Optional)</label>
+                            <textarea id="feedbackComment" class="form-control" rows="3" maxlength="500" placeholder="e.g. Food was fresh and served immediately to 40 shelter residents. Donor was very punctual!"></textarea>
                         </div>
                     </form>
                 </div>
@@ -234,11 +269,11 @@
         </div>
     </div>
 
-    <!-- ==================================================
-         SCRIPTS
-    ================================================== -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.js"></script>
+    <!-- Leaflet Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="JS/notifications.js"></script>
     <script src="JS/recipient-dashboard.js"></script>
 </body>

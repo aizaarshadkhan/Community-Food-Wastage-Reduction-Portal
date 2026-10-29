@@ -1,970 +1,310 @@
+/**
+ * script.js - Authentication & Global Scripts for MealBridge
+ * Handles:
+ * 1. User Login with role-based redirection (Donor, Recipient, Admin)
+ * 2. Role-specific Registration (Donor vs Recipient with NGO Document Upload)
+ * 3. Browser GPS Geolocation capture
+ * 4. Remember-me credential caching
+ */
+
 $(document).ready(function () {
-
-    /* =========================================
-        REMEMBER ME
-    ======================================== */
-
+    // ============================================================
+    // 1. REMEMBER ME (LOGIN CACHE)
+    // ============================================================
     const savedEmail = localStorage.getItem("remembered_email");
-
     if (savedEmail) {
-
         $("#email").val(savedEmail);
-
         $("#remember-me").prop("checked", true);
-
     }
 
-
-    /* =========================================
-       LOGIN
-    ========================================= */
-
+    // ============================================================
+    // 2. USER LOGIN HANDLER
+    // ============================================================
     $(".login-button").click(function (e) {
-
         e.preventDefault();
 
         const email = $("#email").val().trim();
         const password = $("#password").val();
 
         $("#loginError").addClass("d-none").text("");
+        $("#emailError").text("");
+        $("#passwordError").text("");
 
-        if (email === "" || password === "") {
-
-            $("#loginError")
-                .removeClass("d-none")
-                .text("Please enter your email and password.");
-
+        // Basic validation
+        if (email === "") {
+            $("#loginError").removeClass("d-none").text("Please enter your email and password.");
+            return;
+        }
+        if (password === "") {
+            $("#loginError").removeClass("d-none").text("Please enter your email and password.");
             return;
         }
 
+        // Send login credentials to backend
         $.ajax({
-
             url: "BACKEND/auth/login.php",
             type: "POST",
-
             data: {
                 email: email,
                 password: password
             },
-
             dataType: "json",
-
             success: function (response) {
-
-                console.log("LOGIN RESPONSE:", response);
-
                 if (response.success) {
-
-                    /* =====================================
-                        REMEMBER ME
-                    ===================================== */
-
+                    // Remember me preference
                     if ($("#remember-me").is(":checked")) {
-
-                        localStorage.setItem(
-                            "remembered_email",
-                            email
-                        );
-
+                        localStorage.setItem("remembered_email", email);
                     } else {
-
-                        localStorage.removeItem(
-                            "remembered_email"
-                        );
-
+                        localStorage.removeItem("remembered_email");
                     }
 
-                    // =====================================
-                    // SAVE LOGGED-IN USER
-                    // =====================================
-
-                    localStorage.setItem(
-                        "user_id",
-                        response.user.id
-                    );
-
-                    localStorage.setItem(
-                        "role",
-                        response.user.role.toUpperCase()
-                    );
-
-                    localStorage.setItem(
-                        "email",
-                        response.user.email
-                    );
-
-
-                    console.log(
-                        "User ID:",
-                        localStorage.getItem("user_id")
-                    );
-
-                    console.log(
-                        "Role:",
-                        localStorage.getItem("role")
-                    );
-
-
-                    // =====================================
-                    // REDIRECT BASED ON ROLE
-                    // =====================================
-
-                    if (response.user.role.toUpperCase() === "DONOR") {
-
-                        window.location.href =
-                            "donor-dashboard.html";
-
+                    // Save session details in browser storage
+                    localStorage.setItem("user_id", response.user.id);
+                    localStorage.setItem("role", response.user.role.toUpperCase());
+                    localStorage.setItem("email", response.user.email);
+                    if (response.user.verification_status) {
+                        localStorage.setItem("verification_status", response.user.verification_status);
                     }
 
-                    else if (response.user.role.toUpperCase() === "RECIPIENT") {
-                        window.location.href =
-                            "recipient-dashboard.html";
+                    // Redirect user based on assigned role
+                    const role = response.user.role.toUpperCase();
+                    if (role === "DONOR") {
+                        window.location.href = "donor-dashboard.html";
+                    } else if (role === "RECIPIENT") {
+                        window.location.href = "recipient-dashboard.html";
+                    } else if (role === "ADMIN") {
+                        window.location.href = "admin-dashboard.html";
+                    } else {
+                        $("#loginError").removeClass("d-none").text("Unrecognized user role.");
                     }
-                    else if (response.user.role.toUpperCase() === "ADMIN") {
-                        window.location.href =
-                            "admin-dashboard.html";
-                    }
-
-                    else {
-
-                        $("#loginError")
-                            .removeClass("d-none")
-                            .text("Invalid user role.");
-
-                    }
-
+                } else {
+                    $("#loginError").removeClass("d-none").text(response.message || "Invalid credentials.");
                 }
-
-                else {
-
-                    $("#loginError")
-                        .removeClass("d-none")
-                        .text(response.message);
-
-                }
-
             },
-
             error: function (xhr) {
-
-                console.log("LOGIN PHP ERROR:");
-                console.log(xhr.responseText);
-
-                $("#loginError")
-                    .removeClass("d-none")
-                    .text("Something went wrong. Please try again.");
-
+                console.error("Login AJAX error:", xhr.responseText);
+                $("#loginError").removeClass("d-none").text("Unable to connect to the server. Please try again.");
             }
-
         });
-
     });
 
-
-
-    /* =========================================
-       NAVIGATION
-       ========================================= */
-
+    // ============================================================
+    // 3. RESPONSIVE MOBILE NAVIGATION TOGGLE
+    // ============================================================
     $(".nav-btn").click(function () {
-
-        $("nav ul")
-            .stop()
-            .slideToggle(300);
-
+        $("nav ul").stop().slideToggle(300);
     });
-
 
     $(window).resize(function () {
-
         if ($(window).width() > 768) {
-
             $("nav ul").removeAttr("style");
-
         }
-
     });
 
-
-
-    /* =========================================
-       REGISTER PAGE
-       ========================================= */
-
+    // ============================================================
+    // 4. REGISTRATION PAGE ROLE SWITCH (DONOR VS RECIPIENT)
+    // ============================================================
     let selectedRole = "DONOR";
 
-
-
-    /* -----------------------------------------
-       DONOR / RECIPIENT SWITCH
-       ----------------------------------------- */
-
     $(".role-btn").click(function () {
-
         $(".role-btn").removeClass("active");
-
         $(this).addClass("active");
-
         selectedRole = $(this).data("role");
 
-
-        /* -------------------------------------
-           DONOR
-           ------------------------------------- */
-
         if (selectedRole === "DONOR") {
-
             $("#donorFields").show();
-
             $("#recipientFields").hide();
-
-
             // Clear recipient fields
-
             $("#ngoName").val("");
-
             $("#contactPerson").val("");
-
-            $("#ngoNameError").text("");
-
-            $("#contactPersonError").text("");
             $("#recipientPhone").val("");
+            $("#ngoDoc").val("");
+            $("#ngoNameError").text("");
+            $("#contactPersonError").text("");
             $("#recipientPhoneError").text("");
-
-        }
-
-
-        /* -------------------------------------
-           RECIPIENT
-           ------------------------------------- */
-
-        else {
-
+            $("#ngoDocError").text("");
+        } else {
             $("#donorFields").hide();
-
             $("#recipientFields").show();
-
-
             // Clear donor fields
-
             $("#businessName").val("");
-
             $("#phone").val("");
-
             $("#businessNameError").text("");
-
             $("#phoneError").text("");
-
         }
-
     });
 
-
-
-    /* =========================================
-       USE MY LOCATION
-       ========================================= */
-
+    // ============================================================
+    // 5. GPS LOCATION CAPTURE
+    // ============================================================
     $("#locationButton").click(function () {
-
-        $("#locationError")
-            .removeClass("success error")
-            .text("");
-
-
-        /* -------------------------------------
-           CHECK GEOLOCATION SUPPORT
-           ------------------------------------- */
+        $("#locationError").removeClass("success error").text("");
 
         if (!navigator.geolocation) {
-
-            $("#locationError")
-                .addClass("error")
-                .text(
-                    "Geolocation is not supported by your browser."
-                );
-
+            $("#locationError").addClass("error").text("Geolocation is not supported by your browser.");
             return;
         }
 
-
-        /* -------------------------------------
-           SHOW LOADING
-           ------------------------------------- */
-
-        $("#locationButton")
-            .prop("disabled", true)
-            .html(
-                '<i class="fa-solid fa-spinner fa-spin"></i> Getting Location...'
-            );
-
-
-        /* -------------------------------------
-           GET LOCATION
-           ------------------------------------- */
+        $("#locationButton").prop("disabled", true).html('<i class="fa-solid fa-spinner fa-spin"></i> Getting GPS...');
 
         navigator.geolocation.getCurrentPosition(
-
             function (position) {
-
-                let latitude =
-                    position.coords.latitude;
-
-                let longitude =
-                    position.coords.longitude;
-
-
-                /* -----------------------------
-                   SAVE COORDINATES
-                   ----------------------------- */
-
-                $("#latitude")
-                    .val(latitude);
-
-                $("#longitude")
-                    .val(longitude);
-
-
-                /* -----------------------------
-                   UPDATE BUTTON
-                   ----------------------------- */
-
-                $("#locationButton")
-                    .prop("disabled", false)
-                    .html(
-                        '<i class="fa-solid fa-location-dot"></i> Location Added'
-                    );
-
-
-                /* -----------------------------
-                   SUCCESS MESSAGE
-                   ----------------------------- */
-
-                $("#locationError")
-                    .removeClass("error")
-                    .addClass("success")
-                    .text(
-                        "Your location has been added successfully."
-                    );
-
+                $("#latitude").val(position.coords.latitude);
+                $("#longitude").val(position.coords.longitude);
+                $("#locationButton").prop("disabled", false).html('<i class="fa-solid fa-check"></i> Location Captured');
+                $("#locationError").removeClass("error").addClass("success").text("GPS coordinates successfully pinned.");
             },
-
-
-            /* ---------------------------------
-               LOCATION ERROR
-               --------------------------------- */
-
             function (error) {
-
-                $("#locationButton")
-                    .prop("disabled", false)
-                    .html(
-                        '<i class="fa-solid fa-location-dot"></i> Use My Location'
-                    );
-
-
-                let message =
-                    "Unable to get your location.";
-
-
-                if (error.code === 1) {
-
-                    message =
-                        "Location permission was denied.";
-
-                }
-
-
-                if (error.code === 2) {
-
-                    message =
-                        "Your location could not be determined.";
-
-                }
-
-
-                if (error.code === 3) {
-
-                    message =
-                        "Location request timed out.";
-
-                }
-
-
-                $("#locationError")
-                    .removeClass("success")
-                    .addClass("error")
-                    .text(message);
-
-            }
-
+                $("#locationButton").prop("disabled", false).html('<i class="fa-solid fa-location-dot"></i> Use My GPS Location');
+                $("#locationError").addClass("error").text("Could not retrieve GPS location. Please allow location access.");
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
         );
-
     });
 
-
-
-    /* =========================================
-       REGISTER
-       ========================================= */
-
+    // ============================================================
+    // 6. REGISTRATION SUBMIT HANDLER (Supports Multipart Form Data)
+    // ============================================================
     $(".register-button").click(function (e) {
-
         e.preventDefault();
 
+        const businessName = $("#businessName").val().trim();
+        const phone = $("#phone").val().trim();
+        const ngoName = $("#ngoName").val().trim();
+        const contactPerson = $("#contactPerson").val().trim();
+        const recipientPhone = $("#recipientPhone").val().trim();
+        const email = $("#email").val().trim();
+        const address = $("#address").val().trim();
+        const latitude = $("#latitude").val().trim();
+        const longitude = $("#longitude").val().trim();
+        const password = $("#password").val();
+        const confirmPassword = $("#confirm-password").val();
+        const docFile = $("#ngoDoc")[0] ? $("#ngoDoc")[0].files[0] : null;
 
-        /* -------------------------------------
-           GET FORM VALUES
-           ------------------------------------- */
-
-        let email =
-            $("#email").val().trim();
-
-        let password =
-            $("#password").val().trim();
-
-        let confirmPassword =
-            $("#confirm-password").val().trim();
-
-        let address =
-            $("#address").val().trim();
-
-        let latitude =
-            $("#latitude").val();
-
-        let longitude =
-            $("#longitude").val();
-
-
-        let businessName =
-            $("#businessName").val().trim();
-
-        let phone =
-            $("#phone").val().trim();
-
-
-        let ngoName =
-            $("#ngoName").val().trim();
-
-        let contactPerson =
-            $("#contactPerson").val().trim();
-        let recipientPhone =
-            $("#recipientPhone").val() ? $("#recipientPhone").val().trim() : "";
-
-
-        /* -------------------------------------
-           REGEX
-           ------------------------------------- */
-
-        let emailRegex =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-        let passwordRegex =
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-
+        // Validation regular expressions
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
         let isValid = true;
-
-
-        /* -------------------------------------
-           CLEAR PREVIOUS ERRORS
-           ------------------------------------- */
-
         $(".error").text("");
+        $(".register-success").removeClass("success error").text("");
 
-        $(".register-success")
-            .removeClass("success error")
-            .text("");
-
-
-
-        /* =====================================
-           ROLE VALIDATION
-           ===================================== */
-
-
-        /* -------------------------------------
-           DONOR
-           ------------------------------------- */
-
+        // Role-specific validation
         if (selectedRole === "DONOR") {
-
             if (businessName === "") {
-
-                $("#businessNameError")
-                    .text("Business Name is required");
-
+                $("#businessNameError").text("Business Name is required");
                 isValid = false;
             }
-
-
             if (phone === "") {
-
-                $("#phoneError")
-                    .text("Phone Number is required");
-
+                $("#phoneError").text("Phone Number is required");
                 isValid = false;
             }
-
-        }
-
-
-        /* -------------------------------------
-           RECIPIENT
-           ------------------------------------- */
-
-        else {
-
+        } else {
             if (ngoName === "") {
-
-                $("#ngoNameError")
-                    .text("NGO Name is required");
-
+                $("#ngoNameError").text("NGO Name is required");
                 isValid = false;
             }
-
-
             if (contactPerson === "") {
-                $("#contactPersonError")
-                    .text("Contact Person is required");
+                $("#contactPersonError").text("Contact Person is required");
                 isValid = false;
             }
             if (recipientPhone === "") {
-                $("#recipientPhoneError")
-                    .text("Phone Number is required");
+                $("#recipientPhoneError").text("Phone Number is required");
                 isValid = false;
             }
-
+            if (!docFile) {
+                $("#ngoDocError").text("Verification document (certificate/ID) is required for NGOs.");
+                isValid = false;
+            }
         }
 
-
-
-        /* =====================================
-           EMAIL
-           ===================================== */
-
+        // Common fields validation
         if (email === "") {
-
-            $("#emailError")
-                .text("Email is required");
-
+            $("#emailError").text("Email is required");
             isValid = false;
-
-        }
-
-        else if (!emailRegex.test(email)) {
-
-            $("#emailError")
-                .text("Invalid Email");
-
+        } else if (!emailRegex.test(email)) {
+            $("#emailError").text("Please enter a valid email address");
             isValid = false;
-
         }
-
-
-
-        /* =====================================
-           ADDRESS
-           ===================================== */
 
         if (address === "") {
-
-            $("#addressError")
-                .text("Address is required");
-
+            $("#addressError").text("Address is required");
             isValid = false;
-
         }
 
-
-
-        /* =====================================
-           LOCATION
-           ===================================== */
-
-        if (
-            latitude === "" ||
-            longitude === ""
-        ) {
-
-            $("#locationError")
-                .removeClass("success")
-                .addClass("error")
-                .text(
-                    "Please click 'Use My Location'."
-                );
-
+        if (latitude === "" || longitude === "") {
+            $("#locationError").addClass("error").text("Please click 'Use My Location' to capture your coordinates.");
             isValid = false;
-
         }
-
-
-
-        /* =====================================
-           PASSWORD
-           ===================================== */
 
         if (password === "") {
-
-            $("#passwordError")
-                .text("Password is required");
-
+            $("#passwordError").text("Password is required");
             isValid = false;
-
-        }
-
-        else if (!passwordRegex.test(password)) {
-
-            $("#passwordError")
-                .text(
-                    "Password must contain uppercase, lowercase, number and special character"
-                );
-
+        } else if (!passwordRegex.test(password)) {
+            $("#passwordError").text("Password must contain uppercase, lowercase, number and special character");
             isValid = false;
-
         }
-
-
-
-        /* =====================================
-           CONFIRM PASSWORD
-           ===================================== */
 
         if (confirmPassword === "") {
-
-            $("#confirmPasswordError")
-                .text(
-                    "Confirm Password is required"
-                );
-
+            $("#confirmPasswordError").text("Confirm Password is required");
             isValid = false;
-
-        }
-
-        else if (
-            password !== confirmPassword
-        ) {
-
-            $("#confirmPasswordError")
-                .text(
-                    "Passwords do not match"
-                );
-
+        } else if (password !== confirmPassword) {
+            $("#confirmPasswordError").text("Passwords do not match");
             isValid = false;
-
         }
 
+        if (!isValid) return;
 
+        // Build FormData to support file upload (verification document)
+        const formData = new FormData();
+        formData.append("role", selectedRole);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("address", address);
+        formData.append("latitude", latitude);
+        formData.append("longitude", longitude);
 
-        /* =====================================
-           STOP IF INVALID
-           ===================================== */
-
-        if (!isValid) {
-
-            return;
-
+        if (selectedRole === "DONOR") {
+            formData.append("business_name", businessName);
+            formData.append("phone", phone);
+        } else {
+            formData.append("ngo_name", ngoName);
+            formData.append("contact_person", contactPerson);
+            formData.append("phone", recipientPhone);
+            if (docFile) {
+                formData.append("verification_doc", docFile);
+            }
         }
 
+        $(".register-button").prop("disabled", true).text("Registering...");
 
-
-        /* =====================================
-           PREPARE DATA
-           ===================================== */
-
-        let formData = {
-
-            role: selectedRole,
-
-            email: email,
-
-            password: password,
-
-
-            /* -------------------------------
-               DONOR DATA
-               ------------------------------- */
-
-            business_name:
-                selectedRole === "DONOR"
-                    ? businessName
-                    : "",
-
-            phone:
-                selectedRole === "DONOR"
-                    ? phone
-                    : recipientPhone,
-
-
-            /* -------------------------------
-               RECIPIENT DATA
-               ------------------------------- */
-
-            ngo_name:
-                selectedRole === "RECIPIENT"
-                    ? ngoName
-                    : "",
-
-            contact_person:
-                selectedRole === "RECIPIENT"
-                    ? contactPerson
-                    : "",
-
-
-            /* -------------------------------
-               COMMON DATA
-               ------------------------------- */
-
-            address: address,
-
-            latitude: latitude,
-
-            longitude: longitude
-
-        };
-
-
-
-        /* =====================================
-           DISABLE REGISTER BUTTON
-           ===================================== */
-
-        $(".register-button")
-            .prop("disabled", true)
-            .text("Registering...");
-
-
-
-        /* =====================================
-           AJAX → register.php
-           ===================================== */
-
+        // Submit to backend
         $.ajax({
-
-            url:
-                "BACKEND/auth/register.php",
-
+            url: "BACKEND/auth/register.php",
             type: "POST",
-
             data: formData,
-
+            processData: false,
+            contentType: false,
             dataType: "json",
-
-
-            /* ---------------------------------
-               SUCCESS RESPONSE
-               --------------------------------- */
-
             success: function (response) {
-
-                console.log(response);
-
+                $(".register-button").prop("disabled", false).text("Register");
 
                 if (response.success) {
-
-                    $(".register-success")
-                        .removeClass("error")
-                        .addClass("success")
-                        .text(response.message)
-                        .show();
-
-
-                    /* -------------------------
-                       CLEAR FORM
-                       ------------------------- */
-
-                    $("#email").val("");
-
-                    $("#address").val("");
-
-                    $("#password").val("");
-
-                    $("#confirm-password").val("");
-
-                    $("#latitude").val("");
-
-                    $("#longitude").val("");
-
-
-                    $("#businessName").val("");
-
-                    $("#phone").val("");
-
-                    $("#ngoName").val("");
-
-                    $("#contactPerson").val("");
-
-
-                    /* -------------------------
-                       RESET LOCATION BUTTON
-                       ------------------------- */
-
-                    $("#locationButton")
-                        .prop("disabled", false)
-                        .html(
-                            '<i class="fa-solid fa-location-dot"></i> Use My Location'
-                        );
-
+                    $(".register-success").removeClass("error").addClass("success").text(response.message).show();
+                    // Clear inputs
+                    $("#email, #address, #password, #confirm-password, #businessName, #phone, #ngoName, #contactPerson, #recipientPhone, #ngoDoc").val("");
+                    setTimeout(function () {
+                        window.location.href = "login.html";
+                    }, 2000);
+                } else {
+                    $(".register-success").removeClass("success").addClass("error").text(response.message).show();
                 }
-
-
-                else {
-
-                    $(".register-success")
-                        .removeClass("success")
-                        .addClass("error")
-                        .text(response.message)
-                        .show();
-
-                }
-
             },
-
-
-            /* ---------------------------------
-               AJAX ERROR
-               --------------------------------- */
-
             error: function (xhr) {
-
-                console.log(
-                    "REGISTER PHP ERROR:"
-                );
-
-                console.log(
-                    xhr.responseText
-                );
-
-
-                $(".register-success")
-                    .removeClass("success")
-                    .addClass("error")
-                    .text(
-                        "Something went wrong. Please try again."
-                    )
-                    .show();
-
-            },
-
-
-            /* ---------------------------------
-               ENABLE BUTTON AGAIN
-               --------------------------------- */
-
-            complete: function () {
-
-                $(".register-button")
-                    .prop("disabled", false)
-                    .text("Register");
-
+                $(".register-button").prop("disabled", false).text("Register");
+                console.error("Registration error:", xhr.responseText);
+                $(".register-success").removeClass("success").addClass("error").text("Server error. Please try again.").show();
             }
-
         });
-
-    });
-
-
-
-    /* =========================================
-       BLOG SLIDER
-       ========================================= */
-
-    const slider = $(".slider");
-
-    const card = $(".blog-card");
-
-
-    /* -----------------------------------------
-       CALCULATE SCROLL AMOUNT
-       ----------------------------------------- */
-
-    function getScrollAmount() {
-
-        /* Mobile */
-
-        if ($(window).width() <= 768) {
-
-            return card.outerWidth(true);
-
-        }
-
-
-        /* Tablet */
-
-        if ($(window).width() <= 992) {
-
-            return card.outerWidth(true) * 2;
-
-        }
-
-
-        /* Desktop */
-
-        return card.outerWidth(true) * 3;
-
-    }
-
-
-
-    /* -----------------------------------------
-       NEXT BUTTON
-       ----------------------------------------- */
-
-    $(".next").click(function () {
-
-        slider.animate({
-
-            scrollLeft:
-                slider.scrollLeft() +
-                getScrollAmount()
-
-        }, 100);
-
-    });
-
-    /* -----------------------------------------
-       PREVIOUS BUTTON
-       ----------------------------------------- */
-    $(".prev").click(function () {
-
-        slider.animate({
-
-            scrollLeft:
-                slider.scrollLeft() -
-                getScrollAmount()
-
-        }, 100);
-
-    });
-
-    /* =========================================
-   SOCIAL LOGIN BUTTONS
-========================================= */
-
-    $("#googleLoginBtn").click(function () {
-
-        alert(
-            "Google Login requires Google OAuth configuration."
-        );
-
-    });
-
-
-    $("#appleLoginBtn").click(function () {
-
-        alert(
-            "Apple Login requires Apple OAuth configuration."
-        );
-
-    });
-
-
-    $("#facebookLoginBtn").click(function () {
-
-        alert(
-            "Facebook Login requires Facebook OAuth configuration."
-        );
-
     });
 });

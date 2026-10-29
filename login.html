@@ -4,15 +4,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Login . MealBridge</title>
-    <link rel="stylesheet" href="CSS/style.css">
+
     <link rel="stylesheet" href="CSS/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Cormorant+Upright:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="IMG/logo.png">
+    
+    <style>
+        :root {
+            /* Brand Colors */
+            --primary-color: #065C4B;
+            --secondary-color: #081F45;
+            /* opacity of brand color */
+            --light-primary-color: #065c4b53;
+            --light-secondary-color: #081f455d;
+            /* Background */
+            --background: #FCFCFC;
+            /* Shadow */
+            --shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        }
 
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Login Page */
+        .login {
+            background-image: url(IMG/login-img-left.png), url(IMG/login-img-right.PNG);
+            background-repeat: no-repeat, no-repeat;
+            background-position: left top, right bottom;
+            background-attachment: fixed;
+            background-size: 80% 100%, 60% 80%;
+            width: 100%;
+            height: auto;
+        }
+
+        .container {
+            display: flex;
+            font-family: "Poppins", sans-serif;
+            height: 100vh;
+        }
+
+        .left {
+            padding: 3.125rem 0 3.125rem 3.75rem;
+            color: white;
+            width: 40%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 3.75rem;
+            margin-top: 4.0725rem;
+        }
+
+        .logo-login {
+            margin-bottom: 1.25rem;
+            width: 250px;
+        }
+
+        .left-content {
+            margin-top: -4.0625rem;
+        }
+
+        .left h2 {
+            line-height: 38px;
+            font-weight: 400;
+            font-size: 2.05rem;
+        }
+
+        .left-content p:last-child {
+            font-weight: 200;
+            font-size: 0.93rem;
+            margin-top: 0.625rem;
+        }
+
+        .color {
+            color: var(--primary-color);
+        }
+
+        .line {
+            width: 80px;
+            height: 2px;
+            background: var(--primary-color);
+            margin-bottom: 1.25rem;
+            margin-top: 0.625rem;
+        }
+
+        .bottom-icons {
+            margin-top: -0.625rem;
+            height: 100px;
+            width: 400px;
+        }
+
+        .description {
+            width: 300px;
+        }
+
+        .right {
+            color: var(--secondary-color);
+            width: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            margin-left: 1.5rem;
+        }
+
+        .login-container {
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            height: 500px;
+            width: 350px;
+            margin-top: 1.875rem;
+            padding: 1.25rem;
+            text-align: center;
+            background-color: var(--background);
+        }
+
+        .login-container h2 {
+            font-weight: 700;
+            font-size: 2.05rem;
+        }
+
+        .login-container p:first-of-type {
+            position: relative;
+            bottom: 26px;
+            font-size: 0.875rem;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 0.5625rem;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            position: relative;
+            bottom: 120px;
+            transition: all 1s ease;
+        }
+
+        .login-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        hr {
+            position: relative;
+            bottom: 120px;
+        }
+
+        .login-content {
+            text-align: left;
+            position: relative;
+            bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .login-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            font-weight: 300;
+            position: relative;
+            bottom: 60px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .login-actions a {
+            color: var(--secondary-color);
+        }
+
+        .login-actions a:hover {
+            color: var(--primary-color);
+        }
+
+        .icon {
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .icon button {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(115, 113, 113, 0.582);
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            bottom: 120px;
+            box-shadow: var(--shadow);
+        }
+
+        .icon>button:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(20, 108, 96, 0.15);
+        }
+
+        .icon>button i {
+            font-size: 1.25rem;
+        }
+
+        label {
+            margin-bottom: 0.57rem;
+            font-weight: 600;
+        }
+
+        #password,
+        #email {
+            width: 100%;
+            height: 1.3rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            margin-bottom: 1.5625rem;
+        }
+
+        .password {
+            position: relative;
+            bottom: 30px;
+        }
+
+        .register-line {
+            display: flex;
+            position: relative;
+            bottom: 105px;
+            left: 15px;
+        }
+
+        .register-line p {
+            display: inline;
+            position: relative;
+            top: 1px;
+        }
+
+        .register-line a {
+            position: relative;
+            left: 4px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .register-line a:hover {
+            color: var(--secondary-color);
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.77rem;
+            display: block;
+        }
+
+        .success {
+            border: 2px solid #065C4B;
+            color: #1a1b1b;
+            width: 150px;
+            height: 25px;
+            border-radius: 20px;
+            text-align: center;
+            padding: 0.3125rem;
+            position: relative;
+            left: 40%;
+        }
+
+        small {
+            position: relative;
+            bottom: 40px;
+        }
+
+        .login-message {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .login-message.error {
+            color: red;
+        }
+
+        .login-message.success {
+            color: green;
+        }
+    </style>
 </head>
 
 <body class="login">

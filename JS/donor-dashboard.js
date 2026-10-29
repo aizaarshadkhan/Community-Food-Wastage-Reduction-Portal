@@ -1,639 +1,177 @@
+/**
+ * donor-dashboard.js - Donor Dashboard Logic
+ * 
+ * Functional Requirements Handled:
+ * 1. Summary Statistics: Active listings, total listings, claimed, and delivered.
+ * 2. Impact Metrics: Populates "150 meals saved", "Total waste diverted (kg)", and "CO2 reduction".
+ * 3. Recent Food Listings Table: Shows real-time statuses and actions (View details, Edit, Delete, Mark as Delivered).
+ * 4. Feedback Display: Shows recipient quality & hygiene ratings in listing details modal.
+ */
+
 $(document).ready(function () {
-
-    // ==========================================
-    // GET LOGGED-IN USER
-    // ==========================================
-
+    // ============================================================
+    // 1. AUTHENTICATION CHECK
+    // ============================================================
     const userId = localStorage.getItem("user_id");
     const role = localStorage.getItem("role");
 
-    console.log("Logged-in User ID:", userId);
-    console.log("Logged-in Role:", role);
-
-
-    // ==========================================
-    // CHECK DONOR LOGIN
-    // ==========================================
-
     if (!userId || !role || role.toUpperCase() !== "DONOR") {
-
         alert("Please login as a donor first.");
-
         window.location.href = "login.html";
-
         return;
     }
 
-
-    // ==========================================
-    // LOAD DONOR DASHBOARD
-    // ==========================================
-
+    // ============================================================
+    // 2. LOAD DASHBOARD DATA (Stats, Impact Metrics, Food Table)
+    // ============================================================
     function loadDashboard() {
-
         $.ajax({
-
             url: "BACKEND/food/donor-food.php",
-
             type: "GET",
-
-            data: {
-                donor_id: userId
-            },
-
+            data: { donor_id: userId },
             dataType: "json",
-
             success: function (response) {
-
-                console.log("DONOR FOOD RESPONSE:");
-                console.log(response);
-
-
                 if (!response.success) {
-
-                    alert(
-                        response.message ||
-                        "Unable to load dashboard."
-                    );
-
+                    alert(response.message || "Unable to load dashboard.");
                     return;
                 }
 
+                // 1. Populate Status Counter Cards
+                $("#statTotalListings").text(response.stats.total || 0);
+                $("#statAvailable").text(response.stats.available || 0);
+                $("#statClaimed").text(response.stats.claimed || 0);
+                $("#statDelivered").text(response.stats.delivered || 0);
 
-                // ==========================================
-                // UPDATE STATISTICS
-                // ==========================================
+                // 2. Populate Impact Metrics (Functional Requirement: 150 meals saved)
+                if (response.impact) {
+                    $("#statMealsSaved").text(response.impact.meals_saved || 0);
+                    $("#statWasteDiverted").text((response.impact.waste_diverted_kg || 0) + " kg");
+                    $("#statCo2Saved").text((response.impact.co2_saved_kg || 0) + " kg");
+                }
 
-                $(".stat-card").eq(0).find("h3")
-                    .text(response.stats.total);
-
-                $(".stat-card").eq(1).find("h3")
-                    .text(response.stats.available);
-
-                $(".stat-card").eq(2).find("h3")
-                    .text(response.stats.claimed);
-
-                $(".stat-card").eq(3).find("h3")
-                    .text(response.stats.delivered);
-
-
-                // ==========================================
-                // UPDATE FOOD TABLE
-                // ==========================================
-
-                const tbody = $(".food-table tbody");
-
+                // 3. Render Recent Food Listings Table
+                const tbody = $("#donorFoodTableBody");
                 tbody.empty();
 
-
-                if (!response.food || response.food.length === 0) {
-
-                    tbody.append(`
-                        <tr>
-                            <td colspan="5" class="text-center py-4">
-                                No food listings yet.
-                            </td>
-                        </tr>
-                    `);
-
+                const foodList = response.food || [];
+                if (foodList.length === 0) {
+                    tbody.html('<tr><td colspan="5" class="text-center py-4 text-muted">No food listings yet. Click "Add Food" to share surplus food.</td></tr>');
                     return;
                 }
 
-
-                // ==========================================
-                // SHOW LATEST 5 FOOD ITEMS
-                // ==========================================
-
-                const recentFood = response.food.slice(0, 5);
-
-
-                // ==========================================
-                // CREATE FOOD ROWS
-                // ==========================================
-
+                // Show up to 10 most recent listings
+                const recentFood = foodList.slice(0, 10);
                 recentFood.forEach(function (food) {
+                    let statusClass = "available";
+                    if (food.status === "CLAIMED") statusClass = "claimed";
+                    else if (food.status === "DELIVERED") statusClass = "delivered";
+                    else if (food.status === "EXPIRED") statusClass = "expired";
 
-                    let statusClass = "";
+                    let expiryText = formatDate(food.expiry_datetime);
 
-                    if (food.status === "AVAILABLE") {
-                        statusClass = "available";
-                    }
-                    else if (food.status === "CLAIMED") {
-                        statusClass = "claimed";
-                    }
-                    else if (food.status === "DELIVERED") {
-                        statusClass = "delivered";
-                    }
-                    else if (food.status === "EXPIRED") {
-                        statusClass = "expired";
-                    }
-
-
-                    // ==========================================
-                    // FORMAT EXPIRY
-                    // ==========================================
-
-                    let expiryText = "N/A";
-
-                    if (food.expiry_datetime) {
-
-                        const expiry = new Date(
-                            food.expiry_datetime.replace(" ", "T")
-                        );
-
-                        if (!isNaN(expiry.getTime())) {
-
-                            expiryText = expiry.toLocaleString([], {
-                                dateStyle: "short",
-                                timeStyle: "short"
-                            });
-
-                        }
-                    }
-
-
-                    // ==========================================
-                    // BUILD ⋮ DROPDOWN
-                    // ==========================================
-
+                    // Dropdown menu actions
                     let actionMenu = `
-
                         <div class="dropdown">
-
-                            <button
-                                class="btn btn-sm"
-                                type="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                                title="More options">
-
+                            <button class="btn btn-sm btn-light border" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More options">
                                 <i class="bi bi-three-dots-vertical"></i>
-
                             </button>
-
-
-                            <ul class="dropdown-menu dropdown-menu-end">
-
-                                <!-- VIEW DETAILS -->
-
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                 <li>
-
-                                    <a
-                                        class="dropdown-item view-food-btn"
-                                        href="#"
-                                        data-food-id="${food.id}">
-
-                                        <i class="bi bi-eye me-2"></i>
-
-                                        View Details
-
+                                    <a class="dropdown-item view-food-btn" href="#" data-food-id="${food.id}">
+                                        <i class="bi bi-eye me-2 text-primary"></i> View Details
                                     </a>
-
                                 </li>
                     `;
 
-
-                    // ==========================================
-                    // EDIT - AVAILABLE ONLY
-                    // ==========================================
-
+                    // Edit & Delete available only if AVAILABLE
                     if (food.status === "AVAILABLE") {
-
                         actionMenu += `
-
                             <li>
-
-                                <a
-                                    class="dropdown-item edit-food-btn"
-                                    href="#"
-                                    data-food-id="${food.id}">
-
-                                    <i class="bi bi-pencil me-2"></i>
-
-                                    Edit
-
+                                <a class="dropdown-item edit-food-btn" href="#" data-food-id="${food.id}">
+                                    <i class="bi bi-pencil me-2 text-secondary"></i> Edit
                                 </a>
-
                             </li>
-
-
+                            <li><hr class="dropdown-divider"></li>
                             <li>
-
-                                <hr class="dropdown-divider">
-
-                            </li>
-
-
-                            <li>
-
-                                <a
-                                    class="dropdown-item text-danger delete-food-btn"
-                                    href="#"
-                                    data-food-id="${food.id}">
-
-                                    <i class="bi bi-trash me-2"></i>
-
-                                    Delete
-
+                                <a class="dropdown-item text-danger delete-food-btn" href="#" data-food-id="${food.id}">
+                                    <i class="bi bi-trash me-2"></i> Delete
                                 </a>
-
                             </li>
-
                         `;
                     }
 
-
-                    // ==========================================
-                    // MARK DELIVERED - CLAIMED ONLY
-                    // ==========================================
-
+                    // Mark as Delivered available if CLAIMED
                     if (food.status === "CLAIMED") {
-
                         actionMenu += `
-
+                            <li><hr class="dropdown-divider"></li>
                             <li>
-
-                                <hr class="dropdown-divider">
-
-                            </li>
-
-
-                            <li>
-
-                                <a
-                                    class="dropdown-item mark-delivered-btn"
-                                    href="#"
-                                    data-food-id="${food.id}">
-
-                                    <i class="bi bi-check-circle me-2"></i>
-
-                                    Mark as Delivered
-
+                                <a class="dropdown-item text-success mark-delivered-btn" href="#" data-food-id="${food.id}">
+                                    <i class="bi bi-check2-circle me-2"></i> Mark as Delivered
                                 </a>
-
                             </li>
-
                         `;
                     }
 
+                    actionMenu += `</ul></div>`;
 
-                    // ==========================================
-                    // CLOSE DROPDOWN
-                    // ==========================================
-
-                    actionMenu += `
-
-                            </ul>
-
-                        </div>
-
-                    `;
-
-
-                    // ==========================================
-                    // ADD TABLE ROW
-                    // ==========================================
+                    const photoIndicator = food.image ? '<i class="bi bi-image text-success me-1" title="Photo attached"></i>' : '';
 
                     tbody.append(`
-
                         <tr>
-
-                            <td>
-                                ${food.image ? '<i class="bi bi-image text-success me-1" title="Photo attached"></i>' : ''}${escapeHtml(food.food_title)}
-                            </td>
-
-
-                            <td>
-                                ${escapeHtml(food.quantity)}
-                            </td>
-
-
-                            <td>
-
-                                <span class="status ${statusClass}">
-
-                                    ${escapeHtml(food.status)}
-
-                                </span>
-
-                            </td>
-
-
-                            <td>
-                                ${expiryText}
-                            </td>
-
-
-                            <td>
-                                ${actionMenu}
-                            </td>
-
+                            <td>${photoIndicator}<strong>${escapeHtml(food.food_title)}</strong></td>
+                            <td>${escapeHtml(food.quantity)}</td>
+                            <td><span class="status ${statusClass}">${escapeHtml(food.status)}</span></td>
+                            <td><small>${expiryText}</small></td>
+                            <td>${actionMenu}</td>
                         </tr>
-
                     `);
-
                 });
-
             },
-
-
-            // ==========================================
-            // AJAX ERROR
-            // ==========================================
-
             error: function (xhr) {
-
-                console.log("Dashboard PHP ERROR:");
-
-                console.log(xhr.responseText);
-
-                alert(
-                    "Unable to load your dashboard. Check the browser console."
-                );
-
+                console.error("Dashboard error:", xhr.responseText);
+                alert("Unable to load donor dashboard. Please check your connection.");
             }
-
         });
-
     }
 
-
-    // =====================================================
-    // VIEW DETAILS
-    // =====================================================
-
+    // ============================================================
+    // 3. VIEW FOOD DETAILS MODAL
+    // ============================================================
     $(document).on("click", ".view-food-btn", function (e) {
-
         e.preventDefault();
-
         const foodId = $(this).data("food-id");
-
-        console.log("Opening details for Food ID:", foodId);
-
-
-        if (!foodId) {
-
-            alert("Food ID is missing.");
-
-            return;
-        }
-
-
-        // ==========================================
-        // GET FOOD DETAILS
-        // ==========================================
+        if (!foodId) return;
 
         $.ajax({
-
             url: "BACKEND/food/food-detail.php",
-
             type: "GET",
-
-            data: {
-
-                food_id: foodId
-
-            },
-
+            data: { food_id: foodId },
             dataType: "json",
-
-
-            success: function (response) {
-
-                console.log("FOOD DETAIL RESPONSE:");
-                console.log(response);
-
-
-                if (!response.success || !response.food) {
-
-                    alert(
-                        response.message ||
-                        "Unable to load food details."
-                    );
-
+            success: function (res) {
+                if (!res.success || !res.food) {
+                    alert(res.message || "Unable to load food details.");
                     return;
                 }
 
+                const food = res.food;
+                $("#modalFoodTitle").text(food.food_title || "-");
+                $("#modalFoodCategory").text(food.category || "-");
+                $("#modalFoodQuantity").text(food.quantity || "-");
+                $("#modalFoodAddress").text(food.pickup_address || "-");
 
-                const food = response.food;
-
-
-                console.log("Selected Food:", food);
-
-
-                // ==========================================
-                // FOOD INFORMATION
-                // ==========================================
-
-                $("#modalFoodTitle")
-                    .text(food.food_title || "-");
-
-
-                $("#modalFoodCategory")
-                    .text(food.category || "-");
-
-
-                $("#modalFoodQuantity")
-                    .text(food.quantity || "-");
-
-
-                $("#modalFoodAddress")
-                    .text(food.pickup_address || "-");
-
-
-                // ==========================================
-                // STATUS
-                // ==========================================
-
-                let statusClass = "";
-
-
-                if (food.status === "AVAILABLE") {
-
-                    statusClass = "available";
-
-                }
-                else if (food.status === "CLAIMED") {
-
-                    statusClass = "claimed";
-
-                }
-                else if (food.status === "DELIVERED") {
-
-                    statusClass = "delivered";
-
-                }
-
+                let statusClass = "available";
+                if (food.status === "CLAIMED") statusClass = "claimed";
+                else if (food.status === "DELIVERED") statusClass = "delivered";
+                else if (food.status === "EXPIRED") statusClass = "expired";
 
                 $("#modalFoodStatus")
-                    .removeClass(
-                        "available expired claimed delivered"
-                    )
+                    .removeClass("available expired claimed delivered")
                     .addClass(statusClass)
                     .text(food.status || "-");
 
+                $("#modalFoodExpiry").text(formatDate(food.expiry_datetime));
 
-                // ==========================================
-                // EXPIRY
-                // ==========================================
-
-                let expiryText = "N/A";
-
-
-                if (food.expiry_datetime) {
-
-                    const expiry = new Date(
-                        food.expiry_datetime.replace(" ", "T")
-                    );
-
-
-                    if (!isNaN(expiry.getTime())) {
-
-                        expiryText = expiry.toLocaleString([], {
-
-                            dateStyle: "short",
-
-                            timeStyle: "short"
-
-                        });
-
-                    }
-
-                }
-
-
-                $("#modalFoodExpiry")
-                    .text(expiryText);
-
-
-                // ==========================================
-                // RECEIVER DETAILS
-                // ==========================================
-
-                const receiverSection =
-                    $("#receiverDetailsSection");
-
-
-                if (
-                    food.status === "CLAIMED" ||
-                    food.status === "DELIVERED"
-                ) {
-
-                    receiverSection.show();
-
-
-                    const receiver = food.receiver;
-
-
-                    if (receiver) {
-
-                        $("#modalReceiverDetails")
-                            .text("Food claimed by recipient");
-
-
-                        $("#modalOrganization")
-                            .text(
-                                receiver.organization ||
-                                "Not provided"
-                            );
-
-
-                        $("#modalContactPerson")
-                            .text(
-                                receiver.contact_person ||
-                                "Not provided"
-                            );
-
-
-                        $("#modalPhone")
-                            .text(
-                                receiver.phone ||
-                                "Not provided"
-                            );
-
-
-                        $("#modalReceiverAddress")
-                            .text(
-                                receiver.address ||
-                                "Not provided"
-                            );
-
-                    }
-
-                    else {
-
-                        $("#modalReceiverDetails")
-                            .text("Receiver information unavailable");
-
-
-                        $("#modalOrganization")
-                            .text("Not provided");
-
-
-                        $("#modalContactPerson")
-                            .text("Not provided");
-
-
-                        $("#modalPhone")
-                            .text("Not provided");
-
-
-                        $("#modalReceiverAddress")
-                            .text("Not provided");
-
-                    }
-
-                }
-
-                else {
-
-                    // ==========================================
-                    // FOOD HAS NOT BEEN CLAIMED
-                    // ==========================================
-
-                    receiverSection.show();
-
-
-                    $("#modalReceiverDetails")
-                        .text("Not claimed yet");
-
-
-                    $("#modalOrganization")
-                        .text("-");
-
-
-                    $("#modalContactPerson")
-                        .text("-");
-
-
-                    $("#modalPhone")
-                        .text("-");
-
-
-                    $("#modalReceiverAddress")
-                        .text("-");
-
-                }
-
-
-                // ==========================================
-                // OPEN MODAL
-                // ==========================================
-
-                const modalElement =
-                    document.getElementById(
-                        "foodDetailsModal"
-                    );
-
-
-                const modal =
-                    bootstrap.Modal.getOrCreateInstance(
-                        modalElement
-                    );
-
-
-                
-                // FOOD PHOTO & FEEDBACK
+                // Photo preview
                 if (food.image) {
                     $("#modalFoodPhoto").attr("src", food.image);
                     $("#modalFoodPhotoContainer").removeClass("d-none");
@@ -642,322 +180,142 @@ $(document).ready(function () {
                     $("#modalFoodPhotoContainer").addClass("d-none");
                 }
 
+                // Receiver Details
+                const receiverSection = $("#receiverDetailsSection");
+                if (food.status === "CLAIMED" || food.status === "DELIVERED") {
+                    receiverSection.show();
+                    const r = food.receiver;
+                    if (r) {
+                        $("#modalOrganization").text(r.organization || "Not provided");
+                        $("#modalContactPerson").text(r.contact_person || "Not provided");
+                        $("#modalPhone").text(r.phone || "Not provided");
+                        $("#modalReceiverAddress").text(r.address || "Not provided");
+                    } else {
+                        $("#modalOrganization").text("Claimed by recipient");
+                        $("#modalContactPerson").text("-");
+                        $("#modalPhone").text("-");
+                        $("#modalReceiverAddress").text("-");
+                    }
+                } else {
+                    receiverSection.hide();
+                }
+
+                // Quality & Hygiene Feedback (Functional Requirement 7)
                 if (food.feedback) {
-                    const stars = "⭐".repeat(Number(food.feedback.rating)) + " " + food.feedback.rating + "/5 Stars";
+                    const stars = "⭐".repeat(Number(food.feedback.rating)) + ` ${food.feedback.rating}/5 Stars`;
                     $("#modalFeedbackRating").text(stars);
-                    $("#modalFeedbackComment").text(food.feedback.comment ? ("\"" + food.feedback.comment + "\"") : "No written comment provided.");
+                    $("#modalFeedbackComment").text(food.feedback.comment ? `"${food.feedback.comment}"` : "No written comment provided.");
                     $("#modalFeedbackContainer").removeClass("d-none");
                 } else {
                     $("#modalFeedbackContainer").addClass("d-none");
                 }
 
+                const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("foodDetailsModal"));
                 modal.show();
-
             },
-
-
             error: function (xhr) {
-
-                console.log(
-                    "Food Details PHP ERROR:"
-                );
-
-                console.log(
-                    xhr.responseText
-                );
-
-
-                alert(
-                    "Unable to load food details."
-                );
-
+                console.error("Food detail error:", xhr.responseText);
+                alert("Unable to fetch food details.");
             }
-
         });
-
     });
 
-
-    // =====================================================
-    // EDIT FOOD
-    // =====================================================
-
+    // ============================================================
+    // 4. EDIT FOOD REDIRECT
+    // ============================================================
     $(document).on("click", ".edit-food-btn", function (e) {
-
         e.preventDefault();
-
         const foodId = $(this).data("food-id");
-
-        console.log("Edit Food ID:", foodId);
-
-
-        window.location.href =
-            "edit-food.html?id=" + foodId;
-
+        window.location.href = "edit-food.html?id=" + foodId;
     });
 
-
-    // =====================================================
-    // DELETE FOOD
-    // =====================================================
-
+    // ============================================================
+    // 5. DELETE FOOD LISTING
+    // ============================================================
     $(document).on("click", ".delete-food-btn", function (e) {
-
         e.preventDefault();
-
         const foodId = $(this).data("food-id");
+        if (!foodId) return;
 
-
-        if (!foodId) {
-
-            alert("Food ID is missing.");
-
+        if (!confirm("Are you sure you want to delete this food listing?")) {
             return;
         }
-
-
-        // ==========================================
-        // CONFIRM DELETE
-        // ==========================================
-
-        const confirmed = confirm(
-            "Are you sure you want to delete this food listing?"
-        );
-
-
-        if (!confirmed) {
-
-            return;
-        }
-
-
-        const button = $(this);
-
-
-        button.addClass("disabled");
-
-        button.html(`
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            Deleting...
-        `);
-
-
-        // ==========================================
-        // DELETE REQUEST
-        // ==========================================
 
         $.ajax({
-
             url: "BACKEND/food/delete-food.php",
-
             type: "POST",
-
             data: {
-
                 food_id: foodId,
-
                 donor_id: userId
-
             },
-
             dataType: "json",
-
-
-            success: function (response) {
-
-                console.log("DELETE FOOD RESPONSE:");
-
-                console.log(response);
-
-
-                if (response.success) {
-
-                    alert(
-                        "Food listing deleted successfully."
-                    );
-
+            success: function (res) {
+                if (res.success) {
+                    alert("Food listing deleted successfully.");
                     loadDashboard();
-
+                } else {
+                    alert(res.message || "Unable to delete food listing.");
                 }
-                else {
-
-                    alert(
-                        response.message ||
-                        "Unable to delete food listing."
-                    );
-
-                }
-
             },
-
-
-            error: function (xhr) {
-
-                console.log("DELETE FOOD PHP ERROR:");
-
-                console.log(xhr.responseText);
-
-                alert(
-                    "Something went wrong while deleting the food listing."
-                );
-
+            error: function () {
+                alert("Something went wrong while deleting the food listing.");
             }
-
         });
-
     });
 
-
-    // =====================================================
-    // MARK AS DELIVERED
-    // =====================================================
-
+    // ============================================================
+    // 6. MARK AS DELIVERED ACTION
+    // ============================================================
     $(document).on("click", ".mark-delivered-btn", function (e) {
-
         e.preventDefault();
-
         const foodId = $(this).data("food-id");
+        if (!foodId) return;
 
-
-        if (!foodId) {
-
-            alert("Food ID is missing.");
-
+        if (!confirm("Confirm that this surplus food donation has been delivered/picked up?")) {
             return;
         }
-
-
-        const confirmed = confirm(
-            "Are you sure this food has been delivered?"
-        );
-
-
-        if (!confirmed) {
-
-            return;
-        }
-
-
-        const button = $(this);
-
-        button.addClass("disabled");
-
-
-        button.html(`
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            Updating...
-        `);
-
-
-        // ==========================================
-        // MARK DELIVERED REQUEST
-        // ==========================================
 
         $.ajax({
-
             url: "BACKEND/food/mark-delivered.php",
-
             type: "POST",
-
             data: {
-
                 food_id: foodId,
-
                 donor_id: userId
-
             },
-
             dataType: "json",
-
-
-            success: function (response) {
-
-                console.log("MARK DELIVERED RESPONSE:");
-
-                console.log(response);
-
-
-                if (response.success) {
-
-                    alert(
-                        "Food marked as delivered."
-                    );
-
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message);
                     loadDashboard();
-
+                } else {
+                    alert(res.message || "Unable to mark food as delivered.");
                 }
-                else {
-
-                    alert(
-                        response.message ||
-                        "Unable to mark food as delivered."
-                    );
-
-                }
-
             },
-
-
-            error: function (xhr) {
-
-                console.log(
-                    "MARK DELIVERED PHP ERROR:"
-                );
-
-                console.log(xhr.responseText);
-
-
-                alert(
-                    "Something went wrong while updating the food."
-                );
-
+            error: function () {
+                alert("Error occurred while updating delivery status.");
             }
-
         });
-
     });
 
-
-    // =====================================================
-    // HTML ESCAPE
-    // =====================================================
-
-    function escapeHtml(value) {
-
-        return $("<div>")
-            .text(value ?? "")
-            .html();
-
+    // ============================================================
+    // 7. HELPERS
+    // ============================================================
+    function formatDate(dateString) {
+        if (!dateString) return "N/A";
+        const date = new Date(String(dateString).replace(" ", "T"));
+        if (isNaN(date.getTime())) return escapeHtml(dateString);
+        return date.toLocaleString([], { dateStyle: "short", timeStyle: "short" });
     }
 
+    function escapeHtml(value) {
+        return $("<div>").text(value ?? "").html();
+    }
 
-    // =====================================================
-    // LOGOUT
-    // =====================================================
-
-        $("#logoutBtn").click(function (e) {
+    $("#logoutBtn").click(function (e) {
         e.preventDefault();
         window.location.href = "logout.html";
     });
 
-
-    // =====================================================
-    // VIEW ALL
-    // =====================================================
-
-    $(".food-card .card-header a").click(function (e) {
-
-        e.preventDefault();
-
-        window.location.href = "my-food.html";
-
-    });
-
-
-    // =====================================================
-    // INITIAL LOAD
-    // =====================================================
-
+    // Initial load
     loadDashboard();
-
 });

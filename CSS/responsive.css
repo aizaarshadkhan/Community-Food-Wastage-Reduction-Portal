@@ -1,48 +1,5 @@
 /* index and login page */
 @media (max-width: 1024px) {
-
-    /* index page start */
-    /* hero section */
-    .hero-container {
-        background-size: 50% 90%, 60% 95%;
-        height: 85vh;
-        width: 107%;
-    }
-
-    .hero {
-        margin-top: 0;
-    }
-
-    .hero h1 {
-        font-size: 35px;
-        margin-top: -10px;
-    }
-
-    .hero-buttons {
-        margin-top: 10px;
-    }
-
-    /* stat section */
-    .statistics {
-        margin-top: -35px;
-        height: 100px;
-    }
-
-    .stat-card {
-        position: relative;
-        bottom: 15px;
-    }
-
-    .stat-card h2 {
-        font-size: 25px;
-    }
-
-    .text p {
-        font-size: 15px;
-    }
-
-    /* index page end */
-
     /* login page start */
     .left {
         margin-top: 100px;
@@ -55,269 +12,10 @@
     .right {
         margin-top: 80px;
     }
-
     /* login page end */
-
 }
 
 @media (max-width: 850px) {
-
-    /* index page start */
-    /* nav bar */
-    .logo h1 {
-        font-size: 40px;
-    }
-
-    .logo img {
-        height: 90px;
-    }
-
-    nav {
-        position: relative;
-        padding: 15px 20px;
-        width: 100%;
-    }
-
-    .nav-btn {
-        display: block;
-        border: none;
-        background: transparent;
-        font-size: 26px;
-        cursor: pointer;
-        color: var(--secondary-color);
-        position: absolute;
-        right: 20px;
-        left: auto;
-    }
-
-    nav ul {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 61px;
-        left: 570px;
-        width: 200px;
-        background: #fff;
-    }
-
-    nav ul li {
-        margin: 8px;
-        text-align: center;
-    }
-
-    .loginbtn,
-    .registerbtn {
-        width: 100px;
-        position: relative;
-        left: 25%;
-    }
-
-    nav ul li a {
-        display: block;
-        padding: 5px;
-    }
-
-    /* hero section */
-    .hero-container {
-        background-size: 50% 90%, 60% 95%;
-        height: 85vh;
-        width: 107%;
-    }
-
-    .hero {
-        margin-top: 0;
-    }
-
-    .hero h1 {
-        font-size: 35px;
-    }
-
-    .hero-buttons {
-        margin-top: 10px;
-    }
-
-    /* stat section */
-    .statistics {
-        margin-top: -35px;
-        height: 100px;
-    }
-
-    .stat-card {
-        position: relative;
-        bottom: 15px;
-    }
-
-    .stat-icon {
-        width: 35px;
-        height: 35px;
-    }
-
-    .stat-icon i {
-        font-size: 18px;
-    }
-
-    .stat-card h2 {
-        font-size: 18px;
-    }
-
-    .text p {
-        font-size: 13px;
-    }
-
-    /* how it works section */
-    .how-it-works {
-        width: 95%;
-        margin: auto;
-        text-align: center;
-    }
-
-    .how-it-works h2 {
-        font-size: 32px;
-    }
-
-    .how-it-works p {
-        font-size: 15px;
-    }
-
-    .steps {
-        display: grid;
-        grid-template-columns: 1fr 50px 1fr;
-        grid-template-rows: auto 50px auto;
-        grid-template-areas:
-            "s1 a1 s2"
-            ".  .  a2"
-            "s4 a3 s3";
-        justify-items: center;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .step-card {
-        width: 100%;
-        max-width: 250px;
-        padding: 30px 20px;
-    }
-
-    .step-card:nth-child(1) {
-        grid-area: s1;
-    }
-
-    .step-card:nth-child(3) {
-        grid-area: s2;
-    }
-
-    .step-card:nth-child(5) {
-        grid-area: s3;
-    }
-
-    .step-card:nth-child(7) {
-        grid-area: s4;
-    }
-
-    /* Arrows */
-
-    .arrow {
-        position: static;
-        font-size: 20px;
-    }
-
-    .arrow:nth-child(2) {
-        grid-area: a1;
-    }
-
-    .arrow:nth-child(4) {
-        grid-area: a2;
-    }
-
-    .arrow:nth-child(6) {
-        grid-area: a3;
-    }
-
-    /* Step 1 → Step 2 */
-    .arrow:nth-child(2) i {
-        transform: rotate(0deg);
-    }
-
-    /* Step 2 ↓ Step 3 */
-    .arrow:nth-child(4) i {
-        transform: rotate(90deg);
-    }
-
-    /* Step 3 ← Step 4 */
-    .arrow:nth-child(6) i {
-        transform: rotate(180deg);
-    }
-
-    /* blog section */
-    .blog-card {
-        flex: 0 0 calc((100% - 25px)/2);
-    }
-
-    /* footer section */
-    .footer-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: 1fr 1fr;
-        grid-template-areas: "b1 b1 b1 b1" "b2 b3 b4 b4";
-    }
-
-    .footer-box:nth-child(1) {
-        display: flex;
-        text-align: center;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .footer-box {
-        text-align: center;
-    }
-
-    .footer-box p {
-        font-size: 15px;
-    }
-
-    .footer-box ul li {
-        font-size: 15px;
-    }
-
-    .footer-box h3 {
-        font-size: 18px;
-    }
-
-    .social-icons {
-        justify-content: center;
-    }
-
-    /* bottom banner section */
-    .bottom-banner {
-        height: 170px;
-        text-align: center;
-        gap: 30px;
-    }
-
-    .bottom-text h2 {
-        width: 100%;
-        font-size: 22px;
-    }
-
-    .bottom-text p {
-        font-size: 13px;
-    }
-
-    .bottom-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        padding: 0;
-    }
-
-    .bottom-buttons a {
-        right: 0;
-        font-size: 12px;
-    }
-
-    /* index page end */
-
     /* login page start */
     .left {
         margin-left: -1.4rem;
@@ -343,96 +41,10 @@
     .bottom-icons {
         display: block;
     }
-
     /* login page end */
 }
 
 @media (max-width: 661px) {
-
-    /* index page start */
-    /* navbar */
-    nav ul {
-        display: none;
-        left: 315px;
-    }
-
-    /* hero section */
-    .hero-container {
-        background-size: 55% 90%, 60% 95%;
-        height: 85vh;
-        width: 107%;
-    }
-
-    .hero {
-        margin-top: 0;
-    }
-
-    .hero h1 {
-        font-size: 30px;
-    }
-
-    .hero p {
-        font-size: 11px;
-    }
-
-    .hero-buttons {
-        margin-top: 10px;
-        font-size: 11px;
-    }
-
-    /* stat section */
-    .statistics {
-        margin-top: -20px;
-        height: 100px;
-        margin-left: 30px;
-    }
-
-    .stat-icon {
-        width: 20px;
-        height: 20px;
-    }
-
-    .stat-icon i {
-        font-size: 12px;
-    }
-
-    .stat-card h2 {
-        font-size: 14px;
-    }
-
-    .text p {
-        font-size: 10px;
-    }
-
-    /* how it works section */
-    .how-it-works h2 {
-        font-size: 30px;
-    }
-
-    .how-it-works p {
-        font-size: 12px;
-    }
-
-    .steps {
-        display: grid;
-        grid-template-columns: 1fr 30px 1fr;
-        grid-template-rows: auto 30px auto;
-    }
-
-    /* blog section */
-    .blog-card {
-        flex: 0 0 100%;
-    }
-
-    .prev,
-    .next {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-
-    /* index page end */
-
     /* login page start */
     .login {
         background-image: url(../IMG/login-bg.png);
@@ -464,165 +76,17 @@
         margin-left: -10rem;
         margin-bottom: -30rem;
     }
-
     /* login page end */
+
+     /* register page start */
+    /* header */
+    nav ul {
+        display: none;
+    }
+    /* register page end */
 }
 
 @media (max-width: 430px) {
-
-    /* index page start */
-    /* navbar */
-    nav ul {
-        display: none;
-        left: 223px;
-    }
-
-    /* hero section */
-    .hero-container {
-        background-size: 60% 80%, 60% 70%;
-        height: 65vh;
-        width: 100%;
-    }
-
-    .hero {
-        margin-left: -15px;
-    }
-
-    .hero h1 {
-        font-size: 25px;
-    }
-
-    .hero p {
-        margin-top: 7px;
-        font-size: 9px;
-        width: 50%;
-        line-height: 1.7;
-    }
-
-    /* how it works section */
-
-    .how-it-works {
-        margin-bottom: -20px;
-    }
-
-    .how-it-works h2 {
-        font-size: 27px;
-    }
-
-    .how-it-works p {
-        font-size: 14px;
-        margin-top: 7px;
-        margin-bottom: -10px;
-    }
-
-    .steps {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        grid-template-areas:
-            " s1 "
-            " a1 "
-            "s2 "
-            " a2 "
-            " s3 "
-            " a3 "
-            " s4 ";
-        justify-items: center;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .arrow:nth-child(2) i,
-    .arrow:nth-child(4) i,
-    .arrow:nth-child(6) i {
-        transform: rotate(90deg);
-    }
-
-    /* stat section */
-    .statistics {
-        margin-top: -20px;
-        height: 100px;
-        margin-left: 30px;
-    }
-
-    .stat-card {
-        gap: 2px;
-        flex-direction: column;
-        margin-top: -9px;
-        margin-left: 3px;
-    }
-
-    .stat-icon {
-        width: 30px;
-        height: 30px;
-    }
-
-    .stat-icon i {
-        font-size: 16px;
-    }
-
-    .stat-card h2 {
-        font-size: 14px;
-        text-align: center;
-    }
-
-    .text p {
-        text-align: center;
-        font-size: 9px;
-    }
-
-    /* bottom banner section */
-    .bottom-banner {
-        height: 120px;
-        text-align: center;
-        gap: 5px;
-        padding: 10px 20px;
-    }
-
-    .bottom-text h2 {
-        width: 100%;
-        font-size: 18px;
-    }
-
-    .bottom-text p {
-        font-size: 9px;
-    }
-
-    .bottom-buttons {
-        gap: 6px;
-    }
-
-    .bottom-buttons a {
-        right: 0;
-        font-size: 9px;
-    }
-
-    /* footer section */
-    .footer-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: 1fr 1fr;
-        grid-template-areas: "b1 b1 b1 b1" "b2 b2 b3 b3" "b4 b4 b4 b4";
-    }
-
-    .footer-box a {
-        font-size: 14px;
-    }
-
-    .footer-box p {
-        font-size: 14px;
-    }
-
-    .footer-box h3 {
-        font-size: 16px;
-    }
-
-    .footer-bottom {
-        font-size: 14px;
-    }
-
-    /* index page end */
-
     /* login page start */
     .left {
         position: relative;
@@ -649,46 +113,23 @@
         bottom: 30px;
         font-size: 0.9rem;
     }
-
     /* login page end */
+
+    /* register page start */
+    .register-body {
+        background-image: url(../IMG/register-bg.png);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-attachment: unset;
+    }
+
+    .container {
+        margin-left: 40px;
+    }
+    /* register page end */
 }
 
 @media (max-width: 385px) {
-
-    /* index page start */
-    /* nav bar */
-    .logo h1 {
-        font-size: 30px;
-        margin-left: -10px;
-    }
-
-    .logo img {
-        height: 80px;
-        margin-left: -12px;
-    }
-
-    nav ul {
-        display: none;
-        left: 173px;
-    }
-
-    /* stat section */
-    .stat-icon {
-        width: 25px;
-        height: 25px;
-    }
-
-    .stat-icon i {
-        font-size: 13px;
-    }
-
-    .stat-card h2 {
-        font-size: 13px;
-        text-align: center;
-    }
-
-    /* index page end */
-
     /* login page start */
     .left {
         position: relative;
@@ -698,27 +139,51 @@
     .login-container {
         width: 300px;
     }
-
     /* login page end */
+
+    /* register page start */
+    .container {
+        margin-left: 26px;
+        width: 310px;
+    }
+
+    .logo {
+        margin-top: 1rem;
+    }
+
+    .logo h1 {
+        font-size: 1.8rem;
+    }
+
+    .logo img {
+        height: 100px;
+    }
+
+    .container h2 {
+        font-size: 1.4rem;
+    }
+
+    .role-btn{
+        font-size: 1rem;
+    }
+    /* register page end */
 }
 
 @media (max-width: 320px) {
-
-    /* index page start */
-    /* navbar */
-    nav ul {
-        display: none;
-        left: 120px;
-    }
-
-    /* index page end */
-
     /* login page start */
     .login-container {
         position: relative;
         left: 0.6rem;
     }
-
     /* login page end */
 
+    /* register page start */
+    .container {
+        margin-left: 26px;
+        width: 270px;
+    }
+    .logo {
+        margin-left: -1rem;
+    }
+    /* register page end */
 }
